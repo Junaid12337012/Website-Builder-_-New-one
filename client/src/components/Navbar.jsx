@@ -552,7 +552,7 @@ export default function Navbar() {
                 <>
                   <NavLink
                     to="/dashboard"
-                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-gray-100 transition-colors"
                   >
                     Dashboard
                   </NavLink>

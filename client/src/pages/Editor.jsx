@@ -1,7 +1,24 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback, useReducer } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { FiSave, FiEye, FiCode, FiSmartphone, FiTablet, FiMonitor, FiX } from 'react-icons/fi'
+import { 
+  FiSave, 
+  FiEye, 
+  FiCode, 
+  FiSmartphone, 
+  FiTablet, 
+  FiMonitor, 
+  FiX, 
+  FiRotateCw, 
+  FiRotateCcw,
+  FiHelpCircle,
+  FiCopy,
+  FiTrash2,
+  FiPlus,
+  FiMinus
+} from 'react-icons/fi'
 import { DndProvider, useDrag, useDrop } from 'react-dnd'
+import { LoadingSpinner, SkeletonLoader } from '../components/LoadingSpinner';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import api from '../lib/api'
 import { getToken } from '../lib/auth'

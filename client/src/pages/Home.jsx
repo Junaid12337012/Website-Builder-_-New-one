@@ -3,11 +3,150 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
   FiArrowRight, FiCode, FiLayers, FiZap, FiCheckCircle, 
   FiGrid, FiCpu, FiGitBranch, FiGlobe, FiSmartphone, 
-  FiServer, FiUsers, FiTrendingUp, FiShield, FiPieChart
+  FiServer, FiUsers, FiTrendingUp, FiShield, FiPieChart,
+  FiStar, FiClock, FiAward, FiDownload, FiEye, FiHeart,
+  FiDollarSign, FiCreditCard, FiCheck, FiX, FiZap as FiBolt
 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+
+// Sample testimonial data
+const testimonials = [
+  {
+    name: 'Sarah Johnson',
+    role: 'Freelance Designer',
+    content: 'This website builder has completely transformed how I work. I can now deliver professional websites to my clients in half the time!',
+    rating: 5,
+    avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
+  },
+  {
+    name: 'Michael Chen',
+    role: 'Startup Founder',
+    content: 'As someone with no coding experience, I was able to create a stunning website for my startup in just a few hours. The templates are amazing!',
+    rating: 5,
+    avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+  },
+  {
+    name: 'Emma Davis',
+    role: 'Small Business Owner',
+    content: 'The customer support is outstanding. They helped me customize my online store exactly how I wanted it. Highly recommended!',
+    rating: 4,
+    avatar: 'https://randomuser.me/api/portraits/women/68.jpg'
+  }
+];
+
+// Pricing plans
+const pricingPlans = [
+  {
+    name: 'Starter',
+    price: 9,
+    period: 'month',
+    description: 'Perfect for personal projects',
+    features: [
+      '5 Projects',
+      '1GB Storage',
+      'Basic Templates',
+      'Community Support',
+      'Basic Analytics'
+    ],
+    featured: false,
+    cta: 'Get Started'
+  },
+  {
+    name: 'Pro',
+    price: 29,
+    period: 'month',
+    description: 'For growing businesses',
+    features: [
+      'Unlimited Projects',
+      '10GB Storage',
+      'Premium Templates',
+      'Priority Support',
+      'Advanced Analytics',
+      'E-commerce Ready',
+      'Custom Domain'
+    ],
+    featured: true,
+    cta: 'Start Free Trial'
+  },
+  {
+    name: 'Enterprise',
+    price: 99,
+    period: 'month',
+    description: 'For large organizations',
+    features: [
+      'Unlimited Projects',
+      'Unlimited Storage',
+      'All Templates',
+      '24/7 Support',
+      'Advanced Analytics',
+      'E-commerce Ready',
+      'Custom Domain',
+      'API Access',
+      'Dedicated Hosting'
+    ],
+    featured: false,
+    cta: 'Contact Sales'
+  }
+];
+
+// Templates showcase
+const templates = [
+  {
+    id: 1,
+    name: 'Portfolio Pro',
+    category: 'Portfolio',
+    image: 'https://via.placeholder.com/400x300/1a1a2e/ffffff?text=Portfolio+Pro',
+    likes: 1243,
+    downloads: 856,
+    isNew: true
+  },
+  {
+    id: 2,
+    name: 'Business Plus',
+    category: 'Business',
+    image: 'https://via.placeholder.com/400x300/16213e/ffffff?text=Business+Plus',
+    likes: 987,
+    downloads: 1204,
+    isNew: false
+  },
+  {
+    id: 3,
+    name: 'E-Store',
+    category: 'E-commerce',
+    image: 'https://via.placeholder.com/400x300/0f3460/ffffff?text=E-Store',
+    likes: 1542,
+    downloads: 2134,
+    isNew: true
+  },
+  {
+    id: 4,
+    name: 'Blogger',
+    category: 'Blog',
+    image: 'https://via.placeholder.com/400x300/533483/ffffff?text=Blogger',
+    likes: 876,
+    downloads: 1567,
+    isNew: false
+  }
+];
+
+// Stats counter
+const stats = [
+  { value: '50,000+', label: 'Active Users', icon: <FiUsers className="w-8 h-8 text-blue-400" /> },
+  { value: '5,000+', label: 'Websites Built', icon: <FiGlobe className="w-8 h-8 text-purple-400" /> },
+  { value: '98%', label: 'Customer Satisfaction', icon: <FiHeart className="w-8 h-8 text-pink-400" /> },
+  { value: '24/7', label: 'Support', icon: <FiClock className="w-8 h-8 text-green-400" /> }
+];
+
+// Integration partners
+const integrations = [
+  { name: 'Stripe', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Stripe' },
+  { name: 'Mailchimp', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Mailchimp' },
+  { name: 'Zapier', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Zapier' },
+  { name: 'Google Analytics', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Google+Analytics' },
+  { name: 'Shopify', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Shopify' }
+];
 
 const features = [
   {
@@ -210,6 +349,30 @@ export default function Home() {
         </div>
       </div>
       
+      {/* Stats Section */}
+      <div className="py-16 bg-gray-800/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {stats.map((stat, index) => (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="p-6 rounded-xl bg-gray-800/50 backdrop-blur-sm border border-gray-700/50"
+              >
+                <div className="flex justify-center mb-3">
+                  {stat.icon}
+                </div>
+                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-sm text-gray-400">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Features Section */}
       <div className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-16">
@@ -234,6 +397,224 @@ export default function Home() {
         </div>
       </div>
       
+      {/* Testimonials Section */}
+      <div className="py-24 bg-gray-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+              Loved by <span className="text-blue-400">thousands of creators</span>
+            </h2>
+            <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+              Don't just take our word for it. Here's what our users say about our platform.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-gray-700/50 hover:border-blue-500/30 transition-all duration-300"
+              >
+                <div className="flex items-center mb-4">
+                  <img 
+                    src={testimonial.avatar} 
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full mr-4"
+                  />
+                  <div>
+                    <h4 className="font-medium text-white">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-400">{testimonial.role}</p>
+                  </div>
+                </div>
+                <div className="flex mb-3">
+                  {[...Array(5)].map((_, i) => (
+                    <FiStar 
+                      key={i} 
+                      className={`w-5 h-5 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'}`} 
+                    />
+                  ))}
+                </div>
+                <p className="text-gray-300 italic">"{testimonial.content}"</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Templates Showcase */}
+      <div className="py-24 bg-gradient-to-br from-gray-900 to-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+              Stunning <span className="text-blue-400">Templates</span>
+            </h2>
+            <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+              Choose from our collection of professionally designed templates. All templates are fully customizable.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {templates.map((template) => (
+              <motion.div
+                key={template.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+                className="group bg-gray-800/50 backdrop-blur-lg rounded-xl overflow-hidden border border-gray-700/50 hover:border-blue-500/30 transition-all duration-300"
+              >
+                <div className="relative">
+                  <img 
+                    src={template.image} 
+                    alt={template.name}
+                    className="w-full h-48 object-cover"
+                  />
+                  {template.isNew && (
+                    <span className="absolute top-3 right-3 bg-blue-500 text-white text-xs font-medium px-2.5 py-0.5 rounded-full">
+                      New
+                    </span>
+                  )}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                      Preview Template
+                    </button>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium text-white">{template.name}</h3>
+                      <p className="text-sm text-gray-400">{template.category}</p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="flex items-center text-sm text-gray-400">
+                        <FiHeart className="w-4 h-4 mr-1" /> {template.likes}
+                      </span>
+                      <span className="flex items-center text-sm text-gray-400">
+                        <FiDownload className="w-4 h-4 mr-1" /> {template.downloads}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="mt-12 text-center">
+            <Link 
+              to="/templates" 
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-300"
+            >
+              View All Templates
+              <FiArrowRight className="ml-2" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing Section */}
+      <div className="py-24 bg-gray-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+              Simple, transparent <span className="text-blue-400">pricing</span>
+            </h2>
+            <p className="mt-4 text-lg text-gray-400 max-w-2xl mx-auto">
+              Choose the perfect plan for your needs. Start with a free trial, no credit card required.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className={`relative rounded-2xl p-8 border ${
+                  plan.featured 
+                    ? 'border-blue-500/30 bg-gradient-to-br from-blue-900/20 to-gray-900/50' 
+                    : 'border-gray-700/50 bg-gray-800/50'
+                } backdrop-blur-lg`}
+              >
+                {plan.featured && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-medium px-4 py-1 rounded-full">
+                    Most Popular
+                  </div>
+                )}
+                
+                <h3 className="text-2xl font-bold text-white mb-1">{plan.name}</h3>
+                <p className="text-gray-400 mb-6">{plan.description}</p>
+                
+                <div className="mb-8">
+                  <span className="text-5xl font-bold text-white">${plan.price}</span>
+                  <span className="text-gray-400">/{plan.period}</span>
+                </div>
+                
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-center">
+                      <FiCheck className="w-5 h-5 text-green-500 mr-2" />
+                      <span className="text-gray-300">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button 
+                  className={`w-full py-3 px-6 rounded-lg font-medium transition-colors duration-300 ${
+                    plan.featured 
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600' 
+                      : 'bg-gray-700/50 text-white hover:bg-gray-600/50'
+                  }`}
+                >
+                  {plan.cta}
+                </button>
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="mt-12 text-center text-gray-400 text-sm">
+            <p>Need a custom plan? <a href="#" className="text-blue-400 hover:underline">Contact our sales team</a></p>
+          </div>
+        </div>
+      </div>
+
+      {/* Integrations Section */}
+      <div className="py-16 bg-gray-800/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-white mb-3">Trusted by industry leaders</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Seamlessly integrate with your favorite tools and services
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 items-center justify-items-center">
+            {integrations.map((integration, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className="opacity-70 hover:opacity-100 transition-opacity duration-300"
+              >
+                <img 
+                  src={integration.logo} 
+                  alt={integration.name}
+                  className="h-10 w-auto mx-auto"
+                />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* CTA Section */}
       <div className="relative py-24 overflow-hidden">
         <div className="absolute inset-0">

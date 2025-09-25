@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
+import Pricing from './pages/Pricing'
 import Editor from './pages/Editor'
 import Navbar from './components/Navbar'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -58,7 +59,8 @@ function AppContent() {
                   </DndProvider>
                 </ProtectedRoute>
               } />
-              <Route path="*" element={<div className="text-gray-600">Page not found</div>} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="*" element={<div className="min-h-screen flex items-center justify-center text-gray-600">Page not found</div>} />
             </Routes>
           </AnimatePresence>
         </main>
