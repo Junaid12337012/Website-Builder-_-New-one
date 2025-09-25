@@ -59,7 +59,7 @@ export const useHoverIntent = (ref, { onHover, onLeave, timeout = 300 }) => {
 const NavItem = ({ children, isActive, hasDropdown, onMouseEnter, onMouseLeave, isHighlighted }) => {
   return (
     <div 
-      className="relative h-full flex items-center group"
+      className="relative h-full flex  items-center group"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
