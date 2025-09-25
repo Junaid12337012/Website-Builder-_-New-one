@@ -2,6 +2,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { AnimatePresence } from 'framer-motion'
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -28,6 +29,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col w-full">
+      <ScrollToTop />
       <Navbar />
       <ErrorBoundary>
         <main className={`w-full flex-1 ${isAuthPage ? '' : 'pt-16'}`}>
