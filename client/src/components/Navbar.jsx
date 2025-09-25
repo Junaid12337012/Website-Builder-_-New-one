@@ -18,7 +18,9 @@ import {
   FiCode,
   FiLayout,
   FiImage,
-  FiShoppingCart
+  FiShoppingCart,
+  FiTwitter,
+  FiGithub
 } from 'react-icons/fi';
 import { motion, AnimatePresence, useAnimation, useInView } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
@@ -96,10 +98,10 @@ const Dropdown = ({ isOpen, onMouseEnter, onMouseLeave, type = 'default' }) => {
   
   // Features Dropdown Content
   const featuresItems = [
-    { icon: <FiLayers className="w-5 h-5 text-blue-500" />, title: 'Drag & Drop', description: 'Intuitive builder with real-time preview' },
-    { icon: <FiGrid className="w-5 h-5 text-purple-500" />, title: 'Templates', description: '100+ responsive templates' },
-    { icon: <FiCode className="w-5 h-5 text-green-500" />, title: 'Custom Code', description: 'Add your own HTML/CSS/JS' },
-    { icon: <FiLayout className="w-5 h-5 text-orange-500" />, title: 'Layouts', description: 'Pre-built sections and layouts' },
+    { icon: <FiLayers className="w-5 h-5 text-blue-400" />, title: 'Drag & Drop', description: 'Intuitive builder with real-time preview' },
+    { icon: <FiGrid className="w-5 h-5 text-purple-400" />, title: 'Templates', description: '100+ responsive templates' },
+    { icon: <FiCode className="w-5 h-5 text-green-400" />, title: 'Custom Code', description: 'Add your own HTML/CSS/JS' },
+    { icon: <FiLayout className="w-5 h-5 text-orange-400" />, title: 'Layouts', description: 'Pre-built sections and layouts' },
   ];
 
   // Learn Dropdown Content
@@ -124,13 +126,13 @@ const Dropdown = ({ isOpen, onMouseEnter, onMouseLeave, type = 'default' }) => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuresItems.map((item, index) => (
-              <div key={index} className="group p-4 rounded-xl hover:bg-gray-50 transition-colors duration-200">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors duration-200">
+              <div key={index} className="group p-4 rounded-xl hover:bg-gray-800 transition-colors duration-200">
+                <div className="w-10 h-10 rounded-lg bg-blue-900/30 flex items-center justify-center mb-3 group-hover:bg-blue-800/40 transition-colors duration-200">
                   {item.icon}
                 </div>
-                <h4 className="font-medium text-gray-900 mb-1">{item.title}</h4>
-                <p className="text-sm text-gray-600">{item.description}</p>
-                <div className="mt-3 flex items-center text-sm font-medium text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <h4 className="font-medium text-gray-100 mb-1">{item.title}</h4>
+                <p className="text-sm text-gray-400">{item.description}</p>
+                <div className="mt-3 flex items-center text-sm font-medium text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   Learn more <FiChevronRight className="ml-1 w-4 h-4" />
                 </div>
               </div>
@@ -141,45 +143,45 @@ const Dropdown = ({ isOpen, onMouseEnter, onMouseLeave, type = 'default' }) => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Learning Resources</h3>
+              <h3 className="text-sm font-semibold text-gray-100 uppercase tracking-wider mb-4">Learning Resources</h3>
               <div className="space-y-4">
                 {learnItems.map((item, index) => (
                   <a 
                     key={index} 
                     href="#" 
-                    className="flex items-start p-3 -mx-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 group"
+                    className="flex items-start p-3 -mx-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 group"
                   >
                     <div className="flex-shrink-0 mt-0.5">
-                      <div className="w-8 h-8 rounded-md bg-blue-50 flex items-center justify-center text-blue-600">
+                      <div className="w-8 h-8 rounded-md bg-blue-900/30 flex items-center justify-center text-blue-400">
                         {item.icon}
                       </div>
                     </div>
                     <div className="ml-4">
-                      <h4 className="text-base font-medium text-gray-900">{item.title}</h4>
-                      <p className="mt-1 text-sm text-gray-500">{item.description}</p>
+                      <h4 className="text-base font-medium text-gray-100">{item.title}</h4>
+                      <p className="mt-1 text-sm text-gray-400">{item.description}</p>
                     </div>
-                    <FiChevronRight className="ml-auto w-5 h-5 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
+                    <FiChevronRight className="ml-auto w-5 h-5 text-gray-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200" />
                   </a>
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">Start Building Today</h3>
-              <p className="text-gray-600 mb-6">Create your first website in minutes with our easy-to-use tools and templates.</p>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-white mb-3">Start Building Today</h3>
+              <p className="text-gray-300 mb-6">Create your first website in minutes with our easy-to-use tools and templates.</p>
               <div className="space-y-3">
                 <a 
                   href="#" 
-                  className="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-all duration-200"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-all duration-200"
                 >
-                  <span className="font-medium">Get Started Guide</span>
-                  <FiArrowRight className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium text-gray-100">Get Started Guide</span>
+                  <FiArrowRight className="w-4 h-4 text-gray-300" />
                 </a>
                 <a 
                   href="#" 
-                  className="w-full flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-all duration-200"
+                  className="w-full flex items-center justify-between px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg hover:bg-gray-700 transition-all duration-200"
                 >
-                  <span className="font-medium">Watch Tutorial</span>
-                  <FiArrowRight className="w-4 h-4 text-gray-400" />
+                  <span className="font-medium text-gray-100">Watch Tutorial</span>
+                  <FiArrowRight className="w-4 h-4 text-gray-300" />
                 </a>
               </div>
             </div>
@@ -189,55 +191,55 @@ const Dropdown = ({ isOpen, onMouseEnter, onMouseLeave, type = 'default' }) => {
         return (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Resources</h3>
+              <h3 className="text-sm font-semibold text-gray-100 uppercase tracking-wider mb-4">Resources</h3>
               <div className="space-y-3">
                 {resourcesItems.map((item, index) => (
                   <a 
                     key={index} 
                     href="#" 
-                    className="flex items-center p-2 -mx-2 rounded-lg hover:bg-gray-50 transition-colors duration-200 group"
+                    className="flex items-center p-2 -mx-2 rounded-lg hover:bg-gray-800 transition-colors duration-200 group"
                   >
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors duration-200">
+                      <div className="w-8 h-8 rounded-md bg-gray-800 flex items-center justify-center text-gray-300 group-hover:bg-blue-900/30 group-hover:text-blue-400 transition-colors duration-200">
                         {item.icon}
                       </div>
                     </div>
                     <div className="ml-3">
-                      <h4 className="text-sm font-medium text-gray-900">{item.title}</h4>
-                      <p className="text-xs text-gray-500">{item.description}</p>
+                      <h4 className="text-sm font-medium text-gray-100">{item.title}</h4>
+                      <p className="text-xs text-gray-400">{item.description}</p>
                     </div>
                   </a>
                 ))}
               </div>
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Templates</h3>
+              <h3 className="text-sm font-semibold text-gray-100 uppercase tracking-wider mb-4">Templates</h3>
               <div className="grid grid-cols-2 gap-3">
                 {['Portfolio', 'Business', 'Blog', 'E-commerce', 'Landing Page', 'More...'].map((item, index) => (
                   <a 
                     key={index} 
                     href="#" 
-                    className="p-3 rounded-lg border border-gray-200 hover:border-blue-200 hover:bg-blue-50 transition-colors duration-200 group"
+                    className="p-3 rounded-lg border border-gray-700 hover:border-blue-700 hover:bg-blue-900/20 transition-colors duration-200 group"
                   >
-                    <div className="w-full h-16 bg-gray-100 rounded mb-2 group-hover:bg-white transition-colors duration-200"></div>
-                    <span className="text-sm font-medium text-gray-700">{item}</span>
+                    <div className="w-full h-16 bg-gray-800 rounded mb-2 group-hover:bg-gray-700 transition-colors duration-200"></div>
+                    <span className="text-sm font-medium text-gray-200">{item}</span>
                   </a>
                 ))}
               </div>
             </div>
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl p-6 text-white">
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 text-white">
               <h3 className="text-lg font-semibold mb-3">Start Building</h3>
-              <p className="text-blue-100 mb-6">Create your website today with our easy-to-use website builder.</p>
+              <p className="text-gray-300 mb-6">Create your website today with our easy-to-use website builder.</p>
               <div className="space-y-3">
                 <a 
                   href="#" 
-                  className="block w-full text-center px-4 py-3 bg-white text-blue-700 font-medium rounded-lg hover:bg-opacity-90 transition-opacity duration-200"
+                  className="block w-full text-center px-4 py-3 bg-gray-800 text-gray-100 font-medium rounded-lg hover:bg-gray-700 transition-colors duration-200"
                 >
                   Get Started - It's Free
                 </a>
                 <a 
                   href="#" 
-                  className="block text-center text-sm font-medium text-blue-100 hover:text-white transition-colors duration-200"
+                  className="block text-center text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
                 >
                   Schedule a Demo
                 </a>
@@ -250,7 +252,7 @@ const Dropdown = ({ isOpen, onMouseEnter, onMouseLeave, type = 'default' }) => {
   
   return (
     <motion.div 
-      className="absolute left-0 right-0 top-full bg-white shadow-2xl rounded-b-2xl border-t border-gray-100 overflow-hidden"
+      className="absolute left-0 right-0 top-full bg-gray-900 shadow-2xl rounded-b-2xl border-t border-gray-800 overflow-hidden"
       initial={{ opacity: 0, y: 10, scale: 0.99 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 10, scale: 0.99 }}
@@ -303,6 +305,12 @@ export default function Navbar() {
   const searchRef = useRef(null);
   const controls = useAnimation();
   const isInView = useInView(navRef, { once: true });
+  
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMenuOpen]);
   
   // Close dropdown when pressing Escape key
   useEffect(() => {
@@ -452,6 +460,15 @@ export default function Navbar() {
     }
   };
 
+  // Map active dropdown to dropdown type used by Dropdown component
+  const dropdownType = activeDropdown === 'Features'
+    ? 'features'
+    : activeDropdown === 'Learn'
+      ? 'learn'
+      : activeDropdown === 'Resources'
+        ? 'resources'
+        : null;
+
   return (
     <header 
       ref={navRef}
@@ -510,7 +527,7 @@ export default function Navbar() {
             <div className="relative" ref={searchRef}>
               <button 
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+                className="p-2 rounded-full text-gray-300 hover:bg-gray-800 transition-colors"
                 aria-label="Search"
               >
                 <FiSearch className="w-5 h-5" />
@@ -520,7 +537,7 @@ export default function Navbar() {
               <AnimatePresence>
                 {searchOpen && (
                   <motion.div 
-                    className="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-xl overflow-hidden"
+                    className="absolute right-0 top-full mt-2 w-80 bg-gray-900 border border-gray-800 rounded-lg shadow-xl overflow-hidden"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
@@ -532,12 +549,12 @@ export default function Navbar() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search..."
-                        className="w-full pl-10 pr-4 py-3 text-sm border-0 focus:ring-0"
+                        className="w-full pl-10 pr-4 py-3 text-sm border-0 focus:ring-0 bg-gray-800 text-gray-100 placeholder-gray-400"
                         autoFocus
                       />
                     </div>
                     {searchQuery && (
-                      <div className="border-t border-gray-100 p-2 text-sm text-gray-500">
+                      <div className="border-t border-gray-800 p-2 text-sm text-gray-400">
                         Search results for "{searchQuery}"
                       </div>
                     )}
@@ -600,12 +617,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Dropdown Menu */}
+      {/* Dropdown Menu - supports Features, Learn, Resources */}
       <AnimatePresence>
-        {activeDropdown === 'Learn' && (
+        {dropdownType && (
           <Dropdown 
-            isOpen={activeDropdown === 'Learn'}
-            onMouseEnter={() => setActiveDropdown('Learn')}
+            isOpen={true}
+            type={dropdownType}
+            onMouseEnter={() => setActiveDropdown(activeDropdown)}
             onMouseLeave={() => setActiveDropdown(null)}
           />
         )}
@@ -619,7 +637,7 @@ export default function Navbar() {
             animate="visible"
             exit="exit"
             variants={mobileMenuVariants}
-            className="lg:hidden bg-white border-t border-gray-100 overflow-hidden"
+            className="lg:hidden bg-gray-900 border-t border-gray-800 overflow-hidden"
           >
             <div className="px-4 py-3 space-y-1">
               {navItems.map((item) => (
@@ -628,8 +646,8 @@ export default function Navbar() {
                     to={item.path}
                     className={({ isActive }) => `block px-3 py-3 text-base font-medium ${
                       isActive 
-                        ? 'text-blue-600 bg-blue-50' 
-                        : 'text-gray-700 hover:bg-gray-50'
+                        ? 'text-blue-400 bg-gray-800' 
+                        : 'text-gray-200 hover:bg-gray-800'
                     } rounded-lg transition-colors`}
                   >
                     <div className="flex items-center justify-between">
@@ -647,13 +665,13 @@ export default function Navbar() {
                   <>
                     <NavLink
                       to="/dashboard"
-                      className="block w-full text-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                      className="block w-full text-center px-4 py-3 text-sm font-medium text-gray-200 hover:bg-gray-800 rounded-lg transition-colors"
                     >
                       Dashboard
                     </NavLink>
                     <button
                       onClick={handleLogout}
-                      className="w-full px-4 py-3 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-colors"
+                      className="w-full px-4 py-3 text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
                     >
                       Logout
                     </button>
@@ -662,7 +680,7 @@ export default function Navbar() {
                   <>
                     <NavLink
                       to="/login"
-                      className="block w-full text-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                      className="block w-full text-center px-4 py-3 text-sm font-medium text-gray-200 hover:bg-gray-800 rounded-lg transition-colors"
                     >
                       Log in
                     </NavLink>
@@ -676,18 +694,18 @@ export default function Navbar() {
                 )}
               </div>
               
-              <div className="pt-4 border-t border-gray-100">
+              <div className="pt-4 border-t border-gray-800">
                 <div className="flex justify-center space-x-6">
-                  <a href="#" className="text-gray-400 hover:text-gray-500">
+                  <a href="#" className="text-gray-400 hover:text-gray-300">
                     <span className="sr-only">GitHub</span>
                     <FiGithub className="h-6 w-6" />
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-gray-500">
+                  <a href="#" className="text-gray-400 hover:text-gray-300">
                     <span className="sr-only">Twitter</span>
                     <FiTwitter className="h-6 w-6" />
                   </a>
                 </div>
-                <p className="mt-4 text-center text-sm text-gray-500">
+                <p className="mt-4 text-center text-sm text-gray-400">
                   &copy; {new Date().getFullYear()} WebCraft. All rights reserved.
                 </p>
               </div>
