@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { FiEdit2, FiTrash2, FiEye, FiPlus, FiLogOut, FiGrid, FiLayers } from 'react-icons/fi'
 import api from '../lib/api'
-import { getToken, clearToken } from '../lib/auth'
+import { getToken } from '../lib/auth'
 import { useNavigate, Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Dashboard() {
   const navigate = useNavigate()
+  const { logout } = useAuth()
   const [projectName, setProjectName] = useState('')
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(false)
@@ -33,9 +35,9 @@ export default function Dashboard() {
     }
   }
 
-  const logout = () => {
-    clearToken()
-    navigate('/login')
+  const handleLogout = () => {
+    logout()
+    navigate('/login', { replace: true })
   }
 
   const createProject = async (e) => {
@@ -74,7 +76,7 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
           <h1 className="text-xl font-bold text-white">Website Builder</h1>
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
           >
             <FiLogOut className="h-5 w-5" />
