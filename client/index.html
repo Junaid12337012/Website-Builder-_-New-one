@@ -1,13 +1,48 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="A modern website builder with drag and drop functionality">
+    <meta name="author" content="Your Name">
+    <meta name="keywords" content="website builder, drag and drop, web design, site creator">
+    <title>WebCraft | Modern Website Builder</title>
+    
+    <!-- Open Graph / Facebook / Twitter Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="WebCraft | Modern Website Builder">
+    <meta property="og:description" content="Create beautiful websites with our intuitive drag and drop website builder">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
   </head>
-  <body>
-    <div id="root"></div>
+  <body class="h-full bg-gray-50">
+    <noscript>
+      <div class="p-4 text-center bg-yellow-100 text-yellow-800">
+        <p class="font-bold">JavaScript is disabled</p>
+        <p>This application requires JavaScript to function properly. Please enable it to continue.</p>
+      </div>
+    </noscript>
+    <div id="root" class="h-full"></div>
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Google Analytics (optional) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR-GA-ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'YOUR-GA-ID');
+    </script> -->
   </body>
 </html>

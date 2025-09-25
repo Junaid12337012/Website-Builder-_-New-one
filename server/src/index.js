@@ -1,34 +1,76 @@
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import mongoose from 'mongoose'
-import authRoutes from './routes/auth.js'
-import projectRoutes from './routes/projects.js'
+const express = require('express');
+const dotenv = require('dotenv');
+const colors = require('colors');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const xss = require('xss-clean');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const errorHandler = require('./middleware/error');
+const connectDB = require('./config/db');
 
-dotenv.config()
+// Load env vars
+dotenv.config({ path: './config/config.env' });
 
-const app = express()
-const PORT = process.env.PORT || 4000
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/wb_mvp'
+// Connect to database
+connectDB();
 
-app.use(cors({ origin: ['http://localhost:5173'], credentials: false }))
-app.use(express.json())
+// Route files
+const auth = require('./routes/auth');
 
-// Health check
-app.get('/api/health', (req, res) => res.json({ ok: true }))
+const app = express();
 
-// Routes
-app.use('/api/auth', authRoutes)
-app.use('/api/projects', projectRoutes)
+// Body parser
+app.use(express.json());
 
-// Connect DB and start server
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
-    console.log('MongoDB connected')
-    app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`))
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err)
-    process.exit(1)
-  })
+// Cookie parser
+app.use(cookieParser());
+
+// Sanitize data
+app.use(mongoSanitize());
+
+// Set security headers
+app.use(helmet());
+
+// Prevent XSS attacks
+app.use(xss());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 mins
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
+// Prevent http param pollution
+app.use(hpp());
+
+// Enable CORS
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
+
+// Mount routers
+app.use('/api/v1/auth', auth);
+
+// Error handler middleware
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
+
+const server = app.listen(
+  PORT,
+  console.log(
+    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
+  )
+);
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err, promise) => {
+  console.log(`Error: ${err.message}`.red);
+  // Close server & exit process
+  server.close(() => process.exit(1));
+});
