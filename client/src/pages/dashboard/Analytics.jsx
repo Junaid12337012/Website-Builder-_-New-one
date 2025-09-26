@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiBarChart2, FiTrendingUp, FiUsers, FiEye, FiDownload, FiClock } from 'react-icons/fi';
+import DashboardLayout from './DashboardLayout';
 
 const Analytics = () => {
   // Sample data for charts
@@ -51,22 +52,23 @@ const Analytics = () => {
   ];
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Analytics Dashboard</h1>
-        <p className="text-gray-600">Monitor your website's performance and visitor insights</p>
-      </div>
+    <DashboardLayout>
+      <div className="">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white">Analytics Dashboard</h1>
+          <p className="text-gray-300">Monitor your website's performance and visitor insights</p>
+        </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div key={index} className="bg-gray-800 rounded-xl border border-gray-700 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">{stat.name}</p>
-                <p className="text-2xl font-semibold mt-1">{stat.value}</p>
+                <p className="text-sm font-medium text-gray-400">{stat.name}</p>
+                <p className="text-2xl font-semibold mt-1 text-white">{stat.value}</p>
                 <p className={`text-sm mt-2 flex items-center ${
-                  stat.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
+                  stat.changeType === 'increase' ? 'text-green-400' : 'text-red-400'
                 }`}>
                   {stat.changeType === 'increase' ? (
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -80,8 +82,8 @@ const Analytics = () => {
                   {stat.change} from last month
                 </p>
               </div>
-              <div className="p-3 rounded-lg bg-blue-50 text-blue-600">
-                <stat.icon className="w-6 h-6" />
+              <div className="p-3 rounded-lg bg-blue-900/30 text-blue-400">
+                <stat.icon className="w-6 h-6"/>
               </div>
             </div>
           </div>
@@ -90,10 +92,10 @@ const Analytics = () => {
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="font-medium text-gray-700">Visitor Overview</h3>
-            <select className="text-sm border border-gray-200 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <h3 className="font-medium text-gray-200">Visitor Overview</h3>
+            <select className="text-sm bg-gray-700 text-gray-100 border border-gray-600 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option>Last 7 days</option>
               <option>Last 30 days</option>
               <option>Last 90 days</option>
@@ -101,23 +103,23 @@ const Analytics = () => {
           </div>
           <div className="h-64">
             {/* Chart would be rendered here */}
-            <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-center h-full bg-gray-900/40 rounded-lg border border-dashed border-gray-700">
               <p className="text-gray-400">Visitor trend chart</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-gray-800 rounded-xl border border-gray-700 p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="font-medium text-gray-700">Page Views</h3>
+            <h3 className="font-medium text-gray-200">Page Views</h3>
             <div className="flex space-x-2">
-              <button className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-lg">Pages</button>
-              <button className="px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 rounded-lg">Sources</button>
+              <button className="px-3 py-1 text-sm bg-blue-900/30 text-blue-400 rounded-lg border border-blue-700/40">Pages</button>
+              <button className="px-3 py-1 text-sm text-gray-300 hover:bg-gray-700 rounded-lg border border-gray-700">Sources</button>
             </div>
           </div>
           <div className="h-64">
             {/* Chart would be rendered here */}
-            <div className="flex items-center justify-center h-full bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-center h-full bg-gray-900/40 rounded-lg border border-dashed border-gray-700">
               <p className="text-gray-400">Page views chart</p>
             </div>
           </div>
@@ -125,43 +127,44 @@ const Analytics = () => {
       </div>
 
       {/* Top Pages Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100">
+      <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+        <div className="p-6 border-b border-gray-700">
           <div className="flex justify-between items-center">
-            <h3 className="font-medium text-gray-700">Top Pages</h3>
-            <button className="flex items-center text-sm text-blue-600 hover:text-blue-700">
+            <h3 className="font-medium text-gray-200">Top Pages</h3>
+            <button className="flex items-center text-sm text-blue-400 hover:text-blue-300">
               <FiDownload className="mr-1" />
               Export
             </button>
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-700">
+            <thead className="bg-gray-900/40">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Page</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visitors</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Page Views</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conversion</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Page</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Visitors</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Page Views</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Conversion</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-gray-800 divide-y divide-gray-700">
               {topPages.map((page, index) => (
-                <tr key={index} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{page.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{page.visitors}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{page.views}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{page.conversion}</td>
+                <tr key={index} className="hover:bg-gray-700/40">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{page.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{page.visitors}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{page.views}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{page.conversion}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="px-6 py-3 bg-gray-50 text-right text-sm">
-          <button className="text-blue-600 hover:text-blue-700 font-medium">View All</button>
+        <div className="px-6 py-3 bg-gray-900/40 border-t border-gray-700 text-right text-sm">
+          <button className="text-blue-400 hover:text-blue-300 font-medium">View All</button>
         </div>
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 };
 

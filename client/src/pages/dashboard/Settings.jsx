@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FiSettings, FiUser, FiLock, FiBell, FiCreditCard, FiGlobe, FiDownload, FiTrash2 } from 'react-icons/fi';
+import DashboardLayout from './DashboardLayout';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -401,11 +402,12 @@ const Settings = () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
-        <p className="text-gray-600">Manage your account settings and preferences</p>
-      </div>
+    <DashboardLayout>
+      <div className="">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white">Settings</h1>
+          <p className="text-gray-300">Manage your account settings and preferences</p>
+        </div>
 
       <div className="lg:grid lg:grid-cols-12 lg:gap-x-5">
         {/* Sidebar navigation */}
@@ -417,13 +419,13 @@ const Settings = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`${
                   activeTab === tab.id
-                    ? 'bg-blue-50 border-blue-500 text-blue-700 hover:bg-blue-50 hover:text-blue-700'
-                    : 'border-transparent text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                } group border-l-4 px-3 py-2 flex items-center text-sm font-medium w-full text-left`}
+                    ? 'bg-blue-900/30 border-blue-500 text-blue-400 hover:bg-blue-900/40'
+                    : 'border-transparent text-gray-300 hover:bg-gray-800 hover:text-white'
+                } group border-l-4 border-gray-700 px-3 py-2 flex items-center text-sm font-medium w-full text-left rounded-md`}
               >
                 <tab.icon
                   className={`${
-                    activeTab === tab.id ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500'
+                    activeTab === tab.id ? 'text-blue-400' : 'text-gray-400 group-hover:text-gray-300'
                   } flex-shrink-0 -ml-1 mr-3 h-6 w-6`}
                   aria-hidden="true"
                 />
@@ -443,13 +445,13 @@ const Settings = () => {
                 <div className="flex justify-end">
                   <button
                     type="button"
-                    className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="bg-gray-800 py-2 px-4 border border-gray-600 rounded-md text-sm font-medium text-gray-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-900"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-900"
                   >
                     Save
                   </button>
@@ -460,16 +462,16 @@ const Settings = () => {
 
           {/* Danger zone */}
           {activeTab === 'profile' && (
-            <div className="bg-white shadow sm:rounded-lg mt-8">
+            <div className="bg-gray-800 border border-gray-700 sm:rounded-lg mt-8">
               <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Delete account</h3>
-                <div className="mt-2 max-w-xl text-sm text-gray-500">
+                <h3 className="text-lg leading-6 font-medium text-white">Delete account</h3>
+                <div className="mt-2 max-w-xl text-sm text-gray-300">
                   <p>Once you delete your account, there is no going back. Please be certain.</p>
                 </div>
                 <div className="mt-5">
                   <button
                     type="button"
-                    className="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
+                    className="inline-flex items-center justify-center px-4 py-2 border border-red-700 font-medium rounded-md text-red-300 bg-red-900/30 hover:bg-red-900/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 focus:ring-offset-gray-900 sm:text-sm"
                   >
                     <FiTrash2 className="-ml-1 mr-2 h-5 w-5" />
                     Delete account
@@ -480,7 +482,8 @@ const Settings = () => {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 };
 
