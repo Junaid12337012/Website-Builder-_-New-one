@@ -1,0 +1,400 @@
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  FiArrowRight, 
+  FiCheckCircle, 
+  FiStar, 
+  FiCheck,
+  FiZap,
+  FiLayers,
+  FiCode,
+  FiGrid,
+  FiCpu,
+  FiGitBranch,
+  FiUsers,
+  FiGlobe,
+  FiHeart,
+  FiClock
+} from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+
+// Sample data
+const featuresList = [
+  {
+    icon: <FiLayers className="w-6 h-6 text-blue-500" />,
+    title: "Drag & Drop Builder",
+    description: "Create beautiful websites with our intuitive drag and drop interface. No coding required.",
+    color: "blue"
+  },
+  {
+    icon: <FiCode className="w-6 h-6 text-purple-500" />,
+    title: "Clean Code Export",
+    description: "Export production-ready React, HTML, and CSS code that's clean and optimized.",
+    color: "purple"
+  },
+  {
+    icon: <FiZap className="w-6 h-6 text-green-500" />,
+    title: "Lightning Fast",
+    description: "Built with performance in mind. Your websites will load fast and run smoothly.",
+    color: "green"
+  },
+  {
+    icon: <FiGrid className="w-6 h-6 text-yellow-500" />,
+    title: "Responsive Design",
+    description: "Your websites will look great on all devices, from mobile to desktop.",
+    color: "yellow"
+  },
+  {
+    icon: <FiCpu className="w-6 h-6 text-red-500" />,
+    title: "Powerful CMS",
+    description: "Manage your content with our built-in CMS and dynamic content features.",
+    color: "red"
+  },
+  {
+    icon: <FiGitBranch className="w-6 h-6 text-indigo-500" />,
+    title: "Version Control",
+    description: "Track changes and collaborate with team members using our version control system.",
+    color: "indigo"
+  }
+];
+
+const testimonials = [
+  {
+    id: 1,
+    name: 'Sarah Johnson',
+    role: 'Freelance Designer',
+    content: 'This website builder has completely transformed how I work. I can now deliver professional websites to my clients in half the time!',
+    rating: 5,
+    avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
+  },
+  {
+    name: 'Michael Chen',
+    role: 'Startup Founder',
+    content: 'As someone with no coding experience, I was able to create a stunning website for my startup in just a few hours. The templates are amazing!',
+    rating: 5,
+    avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+  },
+  {
+    name: 'Emma Davis',
+    role: 'Small Business Owner',
+    content: 'The customer support is outstanding. They helped me customize my online store exactly how I wanted it. Highly recommended!',
+    rating: 4,
+    avatar: 'https://randomuser.me/api/portraits/women/68.jpg'
+  }
+];
+
+// Pricing plans
+const pricingPlans = [
+  {
+    name: 'Starter',
+    price: 9,
+    period: 'month',
+    description: 'Perfect for personal projects',
+    features: [
+      '5 Projects',
+      '1GB Storage',
+      'Basic Templates',
+      'Community Support',
+      'Basic Analytics'
+    ],
+    featured: false,
+    cta: 'Get Started'
+  },
+  {
+    name: 'Pro',
+    price: 29,
+    period: 'month',
+    description: 'For growing businesses',
+    features: [
+      'Unlimited Projects',
+      '10GB Storage',
+      'Premium Templates',
+      'Priority Support',
+      'Advanced Analytics',
+      'E-commerce Ready',
+      'Custom Domain'
+    ],
+    featured: true,
+    cta: 'Start Free Trial'
+  },
+  {
+    name: 'Enterprise',
+    price: 99,
+    period: 'month',
+    description: 'For large organizations',
+    features: [
+      'Unlimited Projects',
+      'Unlimited Storage',
+      'All Templates',
+      '24/7 Support',
+      'Advanced Analytics',
+      'E-commerce Ready',
+      'Custom Domain',
+      'API Access',
+      'Dedicated Hosting'
+    ],
+    featured: false,
+    cta: 'Contact Sales'
+  }
+];
+
+// Templates showcase
+const templates = [
+  {
+    id: 1,
+    name: 'Portfolio Pro',
+    category: 'Portfolio',
+    image: 'https://via.placeholder.com/400x300/1a1a2e/ffffff?text=Portfolio+Pro',
+    likes: 1243,
+    downloads: 856,
+    isNew: true
+  },
+  {
+    id: 2,
+    name: 'Business Plus',
+    category: 'Business',
+    image: 'https://via.placeholder.com/400x300/16213e/ffffff?text=Business+Plus',
+    likes: 987,
+    downloads: 1204,
+    isNew: false
+  },
+  {
+    id: 3,
+    name: 'E-Store',
+    category: 'E-commerce',
+    image: 'https://via.placeholder.com/400x300/0f3460/ffffff?text=E-Store',
+    likes: 1542,
+    downloads: 2134,
+    isNew: true
+  },
+  {
+    id: 4,
+    name: 'Blogger',
+    category: 'Blog',
+    image: 'https://via.placeholder.com/400x300/533483/ffffff?text=Blogger',
+    likes: 876,
+    downloads: 1567,
+    isNew: false
+  }
+];
+
+// Stats counter
+const stats = [
+  { value: '50,000+', label: 'Active Users', icon: <FiUsers className="w-8 h-8 text-blue-400" /> },
+  { value: '5,000+', label: 'Websites Built', icon: <FiGlobe className="w-8 h-8 text-purple-400" /> },
+  { value: '98%', label: 'Customer Satisfaction', icon: <FiHeart className="w-8 h-8 text-pink-400" /> },
+  { value: '24/7', label: 'Support', icon: <FiClock className="w-8 h-8 text-green-400" /> }
+];
+
+// Integration partners
+const integrations = [
+  { name: 'Stripe', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Stripe' },
+  { name: 'Mailchimp', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Mailchimp' },
+  { name: 'Zapier', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Zapier' },
+  { name: 'Google Analytics', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Google+Analytics' },
+  { name: 'Shopify', logo: 'https://via.placeholder.com/100x40/1a1a2e/ffffff?text=Shopify' }
+];
+
+// Features data is already defined above as featuresList
+
+const FeatureCard = ({ icon, title, description, color, index }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3, delay: index * 0.1 }}
+    className={`bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-gray-800 hover:border-${color}-500/30 transition-all duration-300 h-full`}
+  >
+    <div className={`w-12 h-12 rounded-xl bg-${color}-500/10 flex items-center justify-center mb-4`}>
+      {icon}
+    </div>
+    <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
+    <p className="text-gray-400">{description}</p>
+  </motion.div>
+);
+
+const AnimatedText = ({ text, className }) => {
+  const [displayText, setDisplayText] = useState('');
+  
+  useEffect(() => {
+    let currentText = '';
+    let currentIndex = 0;
+    
+    const interval = setInterval(() => {
+      if (currentIndex <= text.length) {
+        setDisplayText(text.substring(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 30);
+    
+    return () => clearInterval(interval);
+  }, [text]);
+  
+  return <span className={className}>{displayText}</span>;
+};
+
+const TestimonialCard = ({ testimonial }) => (
+  <div className="bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-gray-800">
+    <div className="flex items-center mb-4">
+      <img 
+        src={testimonial.avatar} 
+        alt={testimonial.name}
+        className="w-12 h-12 rounded-full mr-4"
+      />
+      <div>
+        <h4 className="font-medium text-white">{testimonial.name}</h4>
+        <p className="text-sm text-gray-400">{testimonial.role}</p>
+      </div>
+    </div>
+    <div className="flex mb-3">
+      {[...Array(5)].map((_, i) => (
+        <FiStar 
+          key={i} 
+          className={`w-5 h-5 ${i < testimonial.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'}`} 
+        />
+      ))}
+    </div>
+    <p className="text-gray-300 italic">"{testimonial.content}"</p>
+  </div>
+);
+
+const Home = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-24">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-grid-white/[0.03] [mask-image:linear-gradient(0deg,transparent,black)]"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium bg-blue-900/30 text-blue-400 border border-blue-800/50 mb-6"
+            >
+              <span className="relative flex h-2 w-2 mr-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+              </span>
+              Introducing our new website builder
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6"
+            >
+              Build websites visually
+              <br />
+              <span className="text-blue-400">without writing code</span>
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-xl text-gray-300 max-w-2xl mx-auto mb-8"
+            >
+              Create beautiful, responsive websites with our intuitive drag and drop builder.
+              Export clean, production-ready code or host with us.
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              <Link 
+                to="/signup" 
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                Get Started Free
+                <FiArrowRight className="ml-2" />
+              </Link>
+              
+              <Link 
+                to="/templates" 
+                className="bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-300 flex items-center justify-center"
+              >
+                View Templates
+              </Link>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="mt-8 flex items-center justify-center gap-2 text-sm text-gray-400"
+            >
+              <FiCheckCircle className="text-green-400" />
+              <span>No credit card required • Free forever</span>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Features Section */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Everything you need to build amazing websites
+            </h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              Powerful features that help you create professional websites without touching a single line of code.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuresList.map((feature, index) => (
+              <FeatureCard 
+                key={index}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                color={feature.color}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gray-800/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Loved by thousands of creators
+            </h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              Don't just take our word for it. Here's what our users say about our platform.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <TestimonialCard key={index} testimonial={testimonial} />
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      <Footer />
+    </div>
+  );
+};
