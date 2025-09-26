@@ -126,20 +126,26 @@ export default function Dashboard() {
   }
 
   const createProject = async (e) => {
-    e.preventDefault()
-    if (!projectName.trim()) return
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    if (!projectName.trim()) {
+      setError('Project name cannot be empty');
+      return;
+    }
+    
+    setLoading(true);
+    setError('');
+    
     try {
-      const { data } = await api.post('/projects', { name: projectName })
-      setProjects((p) => [data.project, ...p])
-      setProjectName('')
-      setShowNewProjectForm(false)
-      navigate(`/editor/${data.project._id}`)
+      const { data } = await api.post('/projects', { name: projectName });
+      setProjects((p) => [data.project, ...p]);
+      setProjectName('');
+      setShowNewProjectForm(false);
+      navigate(`/editor/${data.project._id}`);
     } catch (err) {
-      setError(err?.response?.data?.message || 'Failed to create project')
+      console.error('Error creating project:', err);
+      setError(err?.response?.data?.message || 'Failed to create project. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -917,120 +923,158 @@ export default function Dashboard() {
             )}
           </div>
 
-          {/* New Project Form Modal */}
+          {/* New Project Form Modal - Enhanced */}
           {showNewProjectForm && (
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-gray-800 rounded-2xl max-w-2xl w-full border border-gray-700/50 shadow-2xl overflow-hidden">
-                <div className="p-6 border-b border-gray-700/50">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-bold text-white">Create New Project</h3>
+            <div className="fixed inset-0 z-50 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4 text-center">
+                {/* Overlay */}
+                <div 
+                  className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+                  onClick={() => setShowNewProjectForm(false)}
+                />
+                
+                {/* Modal Container */}
+                <div className="relative w-full max-w-2xl transform overflow-hidden rounded-2xl bg-gray-800 border border-gray-700/50 shadow-2xl transition-all">
+                  {/* Header */}
+                  <div className="px-6 py-5 border-b border-gray-700/50 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Create New Project</h3>
+                      <p className="mt-1 text-sm text-gray-400">Get started by creating a new project</p>
+                    </div>
                     <button 
                       onClick={() => setShowNewProjectForm(false)}
                       className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-700 transition-colors"
+                      aria-label="Close"
                     >
                       <FiX className="h-6 w-6" />
                     </button>
                   </div>
-                  <p className="mt-1 text-sm text-gray-400">Get started by creating a new project</p>
-                </div>
-                
-                <div className="p-6">
-                  <form onSubmit={createProject} className="space-y-6">
-                    <div>
-                      <label htmlFor="projectName" className="block text-sm font-medium text-gray-300 mb-2">
-                        Project Name
-                      </label>
-                      <input
-                        id="projectName"
-                        type="text"
-                        className="block w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all"
-                        placeholder="My Awesome Website"
-                        value={projectName}
-                        onChange={(e) => setProjectName(e.target.value)}
-                        required
-                        autoFocus
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Template
-                      </label>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className={`relative rounded-lg border-2 p-4 cursor-pointer transition-all ${
-                          projectName.includes('Business') ? 'border-blue-500 bg-blue-900/20' : 'border-gray-700 hover:border-gray-600'
-                        }`} onClick={() => setProjectName('Business Website')}>
-                          <div className="h-20 bg-gray-700 rounded mb-3 flex items-center justify-center">
-                            <FiBriefcase className="h-8 w-8 text-blue-400" />
-                          </div>
-                          <h4 className="font-medium text-white">Business</h4>
-                          <p className="text-xs text-gray-400 mt-1">Professional business website</p>
-                          {projectName.includes('Business') && (
-                            <div className="absolute top-2 right-2 h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center">
-                              <FiCheck className="h-3 w-3 text-white" />
+                  
+                  {/* Scrollable Content */}
+                  <div className="max-h-[65vh] overflow-y-auto p-6">
+                    <form id="projectForm" onSubmit={createProject} className="space-y-6">
+                      <div>
+                        <label htmlFor="projectName" className="block text-sm font-medium text-gray-300 mb-2">
+                          Project Name
+                        </label>
+                        <input
+                          id="projectName"
+                          type="text"
+                          className="block w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none transition-all"
+                          placeholder="My Awesome Website"
+                          value={projectName}
+                          onChange={(e) => setProjectName(e.target.value)}
+                          required
+                          autoFocus
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-3">
+                          Choose a Template
+                        </label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div 
+                            className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all hover:border-blue-500/50 ${
+                              projectName.includes('Business') ? 'border-blue-500 bg-blue-900/20' : 'border-gray-700'
+                            }`} 
+                            onClick={() => setProjectName('Business Website')}
+                          >
+                            <div className="h-24 bg-gradient-to-br from-blue-600/20 to-blue-800/20 rounded-lg mb-3 flex items-center justify-center">
+                              <FiBriefcase className="h-10 w-10 text-blue-400" />
                             </div>
-                          )}
-                        </div>
-                        
-                        <div className={`relative rounded-lg border-2 p-4 cursor-pointer transition-all ${
-                          projectName.includes('Portfolio') ? 'border-blue-500 bg-blue-900/20' : 'border-gray-700 hover:border-gray-600'
-                        }`} onClick={() => setProjectName('Portfolio')}>
-                          <div className="h-20 bg-gray-700 rounded mb-3 flex items-center justify-center">
-                            <FiGrid className="h-8 w-8 text-purple-400" />
+                            <h4 className="font-medium text-white">Business</h4>
+                            <p className="text-xs text-gray-400 mt-1">Professional business website</p>
+                            {projectName.includes('Business') && (
+                              <div className="absolute top-3 right-3 h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                <FiCheck className="h-3 w-3 text-white" />
+                              </div>
+                            )}
                           </div>
-                          <h4 className="font-medium text-white">Portfolio</h4>
-                          <p className="text-xs text-gray-400 mt-1">Showcase your work</p>
-                          {projectName.includes('Portfolio') && (
-                            <div className="absolute top-2 right-2 h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center">
-                              <FiCheck className="h-3 w-3 text-white" />
+                          
+                          <div 
+                            className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all hover:border-purple-500/50 ${
+                              projectName.includes('Portfolio') ? 'border-blue-500 bg-blue-900/20' : 'border-gray-700'
+                            }`} 
+                            onClick={() => setProjectName('Portfolio')}
+                          >
+                            <div className="h-24 bg-gradient-to-br from-purple-600/20 to-purple-800/20 rounded-lg mb-3 flex items-center justify-center">
+                              <FiGrid className="h-10 w-10 text-purple-400" />
                             </div>
-                          )}
-                        </div>
-                        
-                        <div className={`relative rounded-lg border-2 p-4 cursor-pointer transition-all ${
-                          projectName.includes('E-commerce') ? 'border-blue-500 bg-blue-900/20' : 'border-gray-700 hover:border-gray-600'
-                        }`} onClick={() => setProjectName('E-commerce Store')}>
-                          <div className="h-20 bg-gray-700 rounded mb-3 flex items-center justify-center">
-                            <FiShoppingBag className="h-8 w-8 text-green-400" />
+                            <h4 className="font-medium text-white">Portfolio</h4>
+                            <p className="text-xs text-gray-400 mt-1">Showcase your work</p>
+                            {projectName.includes('Portfolio') && (
+                              <div className="absolute top-3 right-3 h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                <FiCheck className="h-3 w-3 text-white" />
+                              </div>
+                            )}
                           </div>
-                          <h4 className="font-medium text-white">E-commerce</h4>
-                          <p className="text-xs text-gray-400 mt-1">Online store setup</p>
-                          {projectName.includes('E-commerce') && (
-                            <div className="absolute top-2 right-2 h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center">
-                              <FiCheck className="h-3 w-3 text-white" />
+                          
+                          <div 
+                            className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all hover:border-green-500/50 ${
+                              projectName.includes('E-commerce') ? 'border-blue-500 bg-blue-900/20' : 'border-gray-700'
+                            }`} 
+                            onClick={() => setProjectName('E-commerce Store')}
+                          >
+                            <div className="h-24 bg-gradient-to-br from-green-600/20 to-green-800/20 rounded-lg mb-3 flex items-center justify-center">
+                              <FiShoppingBag className="h-10 w-10 text-green-400" />
                             </div>
-                          )}
-                        </div>
-                        
-                        <div className={`relative rounded-lg border-2 p-4 cursor-pointer transition-all ${
-                          projectName === 'Blank' ? 'border-blue-500 bg-blue-900/20' : 'border-gray-700 hover:border-gray-600'
-                        }`} onClick={() => setProjectName('Blank')}>
-                          <div className="h-20 bg-gray-700 rounded mb-3 flex items-center justify-center">
-                            <FiZap className="h-8 w-8 text-yellow-400" />
+                            <h4 className="font-medium text-white">E-commerce</h4>
+                            <p className="text-xs text-gray-400 mt-1">Online store setup</p>
+                            {projectName.includes('E-commerce') && (
+                              <div className="absolute top-3 right-3 h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                <FiCheck className="h-3 w-3 text-white" />
+                              </div>
+                            )}
                           </div>
-                          <h4 className="font-medium text-white">Blank</h4>
-                          <p className="text-xs text-gray-400 mt-1">Start from scratch</p>
-                          {projectName === 'Blank' && (
-                            <div className="absolute top-2 right-2 h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center">
-                              <FiCheck className="h-3 w-3 text-white" />
+                          
+                          <div 
+                            className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all hover:border-yellow-500/50 ${
+                              projectName === 'Blank' ? 'border-blue-500 bg-blue-900/20' : 'border-gray-700'
+                            }`} 
+                            onClick={() => setProjectName('Blank')}
+                          >
+                            <div className="h-24 bg-gradient-to-br from-yellow-600/20 to-yellow-800/20 rounded-lg mb-3 flex items-center justify-center">
+                              <FiZap className="h-10 w-10 text-yellow-400" />
                             </div>
-                          )}
+                            <h4 className="font-medium text-white">Blank</h4>
+                            <p className="text-xs text-gray-400 mt-1">Start from scratch</p>
+                            {projectName === 'Blank' && (
+                              <div className="absolute top-3 right-3 h-5 w-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                <FiCheck className="h-3 w-3 text-white" />
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-700/50 mt-6">
+                    </form>
+                  </div>
+                  
+                  {/* Fixed Footer */}
+                  <div className="sticky bottom-0 left-0 right-0 bg-gray-800/95 backdrop-blur-sm px-6 py-4 border-t border-gray-700/50">
+                    <div className="flex justify-between items-center">
                       <button
                         type="button"
                         onClick={() => setShowNewProjectForm(false)}
-                        className="px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+                        className="px-5 py-2 text-sm font-medium text-gray-300 hover:text-white bg-gray-700 hover:bg-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
-                        disabled={loading}
-                        className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-all transform hover:-translate-y-0.5"
+                        form="projectForm"
+                        disabled={loading || !projectName.trim()}
+                        className={`inline-flex items-center px-5 py-2.5 text-sm font-medium text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform hover:-translate-y-0.5 ${
+                          !loading && projectName.trim() 
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800' 
+                            : 'bg-blue-600/50 cursor-not-allowed'
+                        }`}
+                        onClick={(e) => {
+                          // Ensure the form is submitted when the button is clicked
+                          if (!projectName.trim()) {
+                            e.preventDefault();
+                          }
+                        }}
                       >
                         {loading ? (
                           <>
@@ -1048,7 +1092,7 @@ export default function Dashboard() {
                         )}
                       </button>
                     </div>
-                  </form>
+                  </div>
                 </div>
               </div>
             </div>
