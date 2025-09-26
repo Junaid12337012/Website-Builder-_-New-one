@@ -54,54 +54,62 @@ app.use(express.json());
 // Cookie parser
 app.use(cookieParser());
 
-// Sanitize data
 app.use(mongoSanitize());
 
 // Set security headers
 app.use(helmet());
 
-// Prevent XSS attacks
-app.use(xss());
+  // Prevent XSS attacks
+  app.use(xss());
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 mins
-  max: 100 // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+  // Rate limiting
+  const limiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 mins
+    max: 100 // limit each IP to 100 requests per windowMs
+  });
+  app.use(limiter);
 
-// Prevent http param pollution
-app.use(hpp());
+  // Prevent http param pollution
+  app.use(hpp());
 
-// Enable CORS
-const allowedOrigins = [
-  'http://localhost:5173', // Vite default port
-  'http://127.0.0.1:5173', // Vite default port (alternative)
-  process.env.FRONTEND_URL
-].filter(Boolean); // Remove any undefined values
+  // Enable CORS
+  const allowedOrigins = [
+    'http://localhost:5173', // Vite default port
+    'http://127.0.0.1:5173', // Vite default port (alternative)
+    process.env.FRONTEND_URL
+  ].filter(Boolean); // Remove any undefined values
 
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) === -1) {
+  app.use(cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+
+      // In development, allow any localhost/127.0.0.1 (any port) to support preview proxies
+      const isDev = (process.env.NODE_ENV || 'development') !== 'production';
+      const localhostRegex = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
+      if (isDev && localhostRegex.test(origin)) {
+        return callback(null, true);
+      }
+
+      // Otherwise, restrict to explicit allowed origins
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        return callback(null, true);
+      }
+
       const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
       return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }));
 
-// Mount routers
-app.use('/api/v1/auth', auth);
-app.use('/api/v1/projects', projects);
+  // Mount routers
+  app.use('/api/v1/auth', auth);
+  app.use('/api/v1/projects', projects);
 
-// Error handler middleware
-app.use(errorHandler);
+  // Error handler middleware
+  app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
