@@ -1,15 +1,33 @@
-import { useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { 
   FiArrowRight, FiCode, FiLayers, FiZap, FiCheckCircle, 
   FiGrid, FiCpu, FiGitBranch, FiGlobe, FiSmartphone, 
   FiServer, FiUsers, FiTrendingUp, FiShield, FiPieChart,
   FiStar, FiClock, FiAward, FiDownload, FiEye, FiHeart,
-  FiDollarSign, FiCreditCard, FiCheck, FiX, FiZap as FiBolt
+  FiDollarSign, FiCreditCard, FiCheck, FiX, FiZap as FiBolt,
+  FiMenu, FiX as FiXIcon, FiChevronDown, FiChevronUp, FiSearch
 } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+
+// Custom hook for responsive design
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    window.addEventListener('resize', listener);
+    return () => window.removeEventListener('resize', listener);
+  }, [matches, query]);
+
+  return matches;
+};
 
 // Sample testimonial data
 const testimonials = [
@@ -184,20 +202,36 @@ const features = [
   }
 ];
 
-const FeatureCard = ({ icon, title, description, index }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3, delay: index * 0.1 }}
-    className="bg-gray-800/50 backdrop-blur-lg rounded-2xl p-6 border border-gray-700/50 hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1"
-  >
-    <div className="w-12 h-12 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center mb-4">
-      {icon}
-    </div>
-    <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
-    <p className="text-gray-400">{description}</p>
-  </motion.div>
-);
+const FeatureCard = ({ icon, title, description, index }) => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: isMobile, amount: 0.2 }}
+      transition={{ duration: 0.4, delay: (index % 3) * 0.1 }}
+      className="group relative bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg rounded-2xl p-6 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1.5 shadow-lg hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden"
+    >
+      {/* Animated background gradient on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      
+      <div className="relative z-10">
+        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 shadow-lg flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+          {React.cloneElement(icon, { className: 'w-6 h-6 text-white' })}
+        </div>
+        <h3 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-3">{title}</h3>
+        <p className="text-gray-300 leading-relaxed">{description}</p>
+        
+        {/* Learn more link */}
+        <div className="mt-4 flex items-center text-blue-400 group-hover:text-blue-300 transition-colors">
+          <span className="text-sm font-medium">Learn more</span>
+          <FiArrowRight className="ml-1.5 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const AnimatedText = ({ text, className }) => {
   const [displayText, setDisplayText] = useState('');
