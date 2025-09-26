@@ -7,6 +7,10 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
+import Projects from './pages/dashboard/Projects';
+import Analytics from './pages/dashboard/Analytics';
+import Team from './pages/dashboard/Team';
+import Settings from './pages/dashboard/Settings';
 import Pricing from './pages/Pricing'
 import Editor from './pages/Editor'
 import Navbar from './components/Navbar'
@@ -50,6 +54,26 @@ function AppContent() {
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/projects" element={
+                <ProtectedRoute>
+                  <Projects />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/analytics" element={
+                <ProtectedRoute>
+                  <Analytics />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/team" element={
+                <ProtectedRoute>
+                  <Team />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/settings" element={
+                <ProtectedRoute>
+                  <Settings />
                 </ProtectedRoute>
               } />
               <Route path="/editor/:id" element={
