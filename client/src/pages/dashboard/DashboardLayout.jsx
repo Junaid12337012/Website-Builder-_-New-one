@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }) {
       />
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-30 w-64 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-gray-800 text-white transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:w-20 lg:w-64 flex-shrink-0`}>
+      <div className={`fixed inset-y-0 left-0 z-30 w-64 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} bg-gray-800 text-white transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:w-20 lg:w-64 flex-shrink-0`} aria-label="Sidebar Navigation">
         <div className="flex flex-col h-full">
           <div className="p-4 border-b border-gray-700 flex items-center justify-between">
             <div className="flex items-center">
@@ -35,12 +35,14 @@ export default function DashboardLayout({ children }) {
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="text-gray-400 hover:text-white lg:hidden"
+              aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+              aria-expanded={isSidebarOpen}
             >
               <FiX className="h-6 w-6" />
             </button>
           </div>
 
-          <nav className="flex-1 overflow-y-auto py-4">
+          <nav className="flex-1 overflow-y-auto py-4" role="navigation" aria-label="Dashboard sections">
             <ul className="space-y-1 px-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -54,6 +56,7 @@ export default function DashboardLayout({ children }) {
                           ? 'bg-gray-900 text-white'
                           : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                       }`}
+                      aria-current={isActive ? 'page' : undefined}
                     >
                       <Icon className="h-5 w-5 mr-3" />
                       {isSidebarOpen && item.name}
@@ -83,7 +86,7 @@ export default function DashboardLayout({ children }) {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden bg-gray-900">
+      <div className="flex-1 flex flex-col overflow-hidden bg-gray-900" role="main" aria-label="Main content">
         <header className="bg-gray-800 shadow-sm">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16 items-center">
@@ -91,6 +94,8 @@ export default function DashboardLayout({ children }) {
                 <button 
                   onClick={() => setIsSidebarOpen(true)}
                   className="text-gray-400 hover:text-white p-2 rounded-md focus:outline-none"
+                  aria-label="Open sidebar"
+                  aria-controls="sidebar"
                 >
                   <span className="sr-only">Open sidebar</span>
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

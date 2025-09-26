@@ -69,7 +69,7 @@ const Projects = () => {
 
           <div className="space-y-4">
             {projects.map((project) => (
-              <div key={project.id} className="border border-gray-700 rounded-xl p-4 hover:bg-gray-750 hover:bg-gray-750/50 transition-colors">
+              <div key={project.id} className="border border-gray-700 rounded-xl p-4 hover:bg-gray-700/50 transition-colors">
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-medium text-white">{project.name}</h3>

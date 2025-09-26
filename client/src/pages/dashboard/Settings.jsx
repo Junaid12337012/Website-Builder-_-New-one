@@ -58,28 +58,28 @@ const Settings = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Profile Information</h3>
-              <p className="mt-1 text-sm text-gray-500">Update your account's profile information and email address.</p>
+              <h3 className="text-lg font-medium text-white">Profile Information</h3>
+              <p className="mt-1 text-sm text-gray-300">Update your account's profile information and email address.</p>
             </div>
             <div className="flex items-center space-x-6">
-              <div className="flex-shrink-0 h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-2xl text-gray-500">
+              <div className="flex-shrink-0 h-16 w-16 rounded-full bg-gray-700 border border-gray-600 flex items-center justify-center text-2xl text-gray-200">
                 {formData.name.split(' ').map(n => n[0]).join('')}
               </div>
               <div>
                 <button 
                   type="button"
-                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                  className="text-sm font-medium text-blue-400 hover:text-blue-300"
                 >
                   Change
                 </button>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-400">
                   JPG, GIF or PNG. Max size of 2MB
                 </p>
               </div>
             </div>
             <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
               <div className="sm:col-span-3">
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-300">
                   Full name
                 </label>
                 <div className="mt-1">
@@ -89,13 +89,13 @@ const Settings = () => {
                     id="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="block w-full sm:text-sm bg-gray-700 border border-gray-600 text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-4">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-300">
                   Email address
                 </label>
                 <div className="mt-1">
@@ -105,13 +105,13 @@ const Settings = () => {
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="block w-full sm:text-sm bg-gray-700 border border-gray-600 text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-4">
-                <label htmlFor="company" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="company" className="block text-sm font-medium text-gray-300">
                   Company
                 </label>
                 <div className="mt-1">
@@ -121,7 +121,7 @@ const Settings = () => {
                     id="company"
                     value={formData.company}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="block w-full sm:text-sm bg-gray-700 border border-gray-600 text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -133,15 +133,15 @@ const Settings = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Update Password</h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <h3 className="text-lg font-medium text-white">Update Password</h3>
+              <p className="mt-1 text-sm text-gray-300">
                 Ensure your account is using a long, random password to stay secure.
               </p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-300">
                   Current Password
                 </label>
                 <div className="mt-1">
@@ -151,13 +151,13 @@ const Settings = () => {
                     id="currentPassword"
                     value={formData.currentPassword}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="block w-full sm:text-sm bg-gray-700 border border-gray-600 text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-300">
                   New Password
                 </label>
                 <div className="mt-1">
@@ -167,13 +167,13 @@ const Settings = () => {
                     id="newPassword"
                     value={formData.newPassword}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="block w-full sm:text-sm bg-gray-700 border border-gray-600 text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300">
                   Confirm Password
                 </label>
                 <div className="mt-1">
@@ -183,7 +183,7 @@ const Settings = () => {
                     id="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                    className="block w-full sm:text-sm bg-gray-700 border border-gray-600 text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -260,54 +260,54 @@ const Settings = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Billing Information</h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <h3 className="text-lg font-medium text-white">Billing Information</h3>
+              <p className="mt-1 text-sm text-gray-300">
                 Manage your subscription and payment methods.
               </p>
             </div>
 
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="bg-gray-800 border border-gray-700 overflow-hidden sm:rounded-lg">
               <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
                 <div>
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">Current Plan</h3>
-                  <p className="mt-1 max-w-2xl text-sm text-gray-500">Pro Plan - $29/month</p>
+                  <h3 className="text-lg leading-6 font-medium text-white">Current Plan</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-300">Pro Plan - $29/month</p>
                 </div>
                 <button
                   type="button"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-900"
                 >
                   Change Plan
                 </button>
               </div>
-              <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+              <div className="border-t border-gray-700 px-4 py-5 sm:px-6">
                 <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
                   <div className="sm:col-span-1">
-                    <dt className="text-sm font-medium text-gray-500">Next Billing Date</dt>
-                    <dd className="mt-1 text-sm text-gray-900">March 15, 2023</dd>
+                    <dt className="text-sm font-medium text-gray-400">Next Billing Date</dt>
+                    <dd className="mt-1 text-sm text-gray-100">March 15, 2023</dd>
                   </div>
                   <div className="sm:col-span-1">
-                    <dt className="text-sm font-medium text-gray-500">Payment Method</dt>
-                    <dd className="mt-1 text-sm text-gray-900">Visa ending in 4242</dd>
+                    <dt className="text-sm font-medium text-gray-400">Payment Method</dt>
+                    <dd className="mt-1 text-sm text-gray-100">Visa ending in 4242</dd>
                   </div>
                   <div className="sm:col-span-1">
-                    <dt className="text-sm font-medium text-gray-500">Billing Email</dt>
-                    <dd className="mt-1 text-sm text-gray-900">billing@example.com</dd>
+                    <dt className="text-sm font-medium text-gray-400">Billing Email</dt>
+                    <dd className="mt-1 text-sm text-gray-100">billing@example.com</dd>
                   </div>
                   <div className="sm:col-span-1">
-                    <dt className="text-sm font-medium text-gray-500">Billing Address</dt>
-                    <dd className="mt-1 text-sm text-gray-900">
+                    <dt className="text-sm font-medium text-gray-400">Billing Address</dt>
+                    <dd className="mt-1 text-sm text-gray-100">
                       123 Main St<br />
                       San Francisco, CA 94103
                     </dd>
                   </div>
                 </dl>
               </div>
-              <div className="px-4 py-4 bg-gray-50 text-right sm:px-6">
+              <div className="px-4 py-4 bg-gray-900/40 border-t border-gray-700 text-right sm:px-6">
                 <button
                   type="button"
-                  className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="inline-flex items-center px-4 py-2 border border-gray-600 text-sm font-medium rounded-md text-gray-200 bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-900"
                 >
-                  <FiDownload className="-ml-1 mr-2 h-5 w-5 text-gray-500" />
+                  <FiDownload className="-ml-1 mr-2 h-5 w-5 text-gray-300" />
                   Download Invoice
                 </button>
               </div>
@@ -319,15 +319,15 @@ const Settings = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Preferences</h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <h3 className="text-lg font-medium text-white">Preferences</h3>
+              <p className="mt-1 text-sm text-gray-300">
                 Customize your application preferences.
               </p>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label htmlFor="timezone" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="timezone" className="block text-sm font-medium text-gray-300">
                   Timezone
                 </label>
                 <select
@@ -335,7 +335,7 @@ const Settings = () => {
                   name="timezone"
                   value={formData.timezone}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-gray-700 border border-gray-600 text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                 >
                   <option value="America/New_York">Eastern Time (ET)</option>
                   <option value="America/Chicago">Central Time (CT)</option>
@@ -345,11 +345,11 @@ const Settings = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Language</label>
+                <label className="block text-sm font-medium text-gray-300">Language</label>
                 <select
                   id="language"
                   name="language"
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-gray-700 border border-gray-600 text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                   defaultValue="en"
                 >
                   <option value="en">English</option>
@@ -360,35 +360,35 @@ const Settings = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Theme</label>
+                <label className="block text-sm font-medium text-gray-300">Theme</label>
                 <div className="mt-2 space-x-4 flex">
                   <label className="inline-flex items-center">
                     <input
                       type="radio"
                       name="theme"
                       value="light"
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 bg-gray-700"
                       defaultChecked
                     />
-                    <span className="ml-2 text-sm text-gray-700">Light</span>
+                    <span className="ml-2 text-sm text-gray-300">Light</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input
                       type="radio"
                       name="theme"
                       value="dark"
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 bg-gray-700"
                     />
-                    <span className="ml-2 text-sm text-gray-700">Dark</span>
+                    <span className="ml-2 text-sm text-gray-300">Dark</span>
                   </label>
                   <label className="inline-flex items-center">
                     <input
                       type="radio"
                       name="theme"
                       value="system"
-                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-600 bg-gray-700"
                     />
-                    <span className="ml-2 text-sm text-gray-700">System</span>
+                    <span className="ml-2 text-sm text-gray-300">System</span>
                   </label>
                 </div>
               </div>

@@ -11,6 +11,7 @@ import {
 import api from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
 import { getToken } from '../lib/auth';
+import { useToast } from '../components/ToastProvider';
 
 const navItems = [
   { name: 'Dashboard', icon: FiHome, path: '/dashboard' },
@@ -65,6 +66,7 @@ const quickTemplates = [
 export default function Dashboard() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { addToast } = useToast();
   const [projectName, setProjectName] = useState('');
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -112,9 +114,20 @@ export default function Dashboard() {
       setLoading(true)
       const { data } = await api.get('/projects')
       setProjects(data.projects || [])
+      addToast({
+        title: 'Projects loaded',
+        description: `${(data.projects || []).length} project(s) ready`,
+        type: 'success',
+        duration: 2000
+      });
     } catch (err) {
       setError('Failed to load projects')
       console.error(err)
+      addToast({
+        title: 'Failed to load projects',
+        description: err?.response?.data?.message || 'Please try again.',
+        type: 'error'
+      });
     } finally {
       setLoading(false)
     }
@@ -129,6 +142,7 @@ export default function Dashboard() {
     e.preventDefault();
     if (!projectName.trim()) {
       setError('Project name cannot be empty');
+      addToast({ title: 'Name required', description: 'Project name cannot be empty', type: 'warning' });
       return;
     }
     
@@ -140,10 +154,12 @@ export default function Dashboard() {
       setProjects((p) => [data.project, ...p]);
       setProjectName('');
       setShowNewProjectForm(false);
+      addToast({ title: 'Project created', description: `${data.project?.name || 'New project'} is ready`, type: 'success' });
       navigate(`/editor/${data.project._id}`);
     } catch (err) {
       console.error('Error creating project:', err);
       setError(err?.response?.data?.message || 'Failed to create project. Please try again.');
+      addToast({ title: 'Create failed', description: err?.response?.data?.message || 'Please try again.', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -154,8 +170,10 @@ export default function Dashboard() {
     try {
       await api.delete(`/projects/${projectId}`)
       setProjects(projects.filter(p => p._id !== projectId))
+      addToast({ title: 'Project deleted', type: 'success', duration: 1800 });
     } catch (err) {
       setError('Failed to delete project')
+      addToast({ title: 'Delete failed', description: 'Could not delete project', type: 'error' });
     }
   }
 

@@ -1,22 +1,25 @@
+import React, { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { AnimatePresence } from 'framer-motion'
 import ScrollToTop from './components/ScrollToTop';
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
-import Dashboard from './pages/Dashboard'
-import Projects from './pages/dashboard/Projects';
-import Analytics from './pages/dashboard/Analytics';
-import Team from './pages/dashboard/Team';
-import Settings from './pages/dashboard/Settings';
-import Pricing from './pages/Pricing'
-import Editor from './pages/Editor'
+const Home = lazy(() => import('./pages/Home'))
+const Login = lazy(() => import('./pages/Login'))
+const Signup = lazy(() => import('./pages/Signup'))
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Projects = lazy(() => import('./pages/dashboard/Projects'))
+const Analytics = lazy(() => import('./pages/dashboard/Analytics'))
+const Team = lazy(() => import('./pages/dashboard/Team'))
+const Settings = lazy(() => import('./pages/dashboard/Settings'))
+const Pricing = lazy(() => import('./pages/Pricing'))
+const Editor = lazy(() => import('./pages/Editor'))
 import Navbar from './components/Navbar'
 import ErrorBoundary from './components/ErrorBoundary'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import { ToastProvider } from './components/ToastProvider'
+import { PageLoader } from './components/LoadingSpinner'
 
 function AppContent() {
   const location = useLocation();
@@ -31,14 +34,17 @@ function AppContent() {
 
   // Check if current route is login or signup
   const isAuthPage = ['/login', '/signup'].includes(location.pathname);
+  // Hide public navbar on dashboard/editor
+  const isDashboardLike = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/editor');
 
   return (
     <div className="min-h-screen flex flex-col w-full">
       <ScrollToTop />
-      <Navbar />
+      {!isDashboardLike && <Navbar />}
       <ErrorBoundary>
-        <main className={`w-full flex-1 ${isAuthPage ? '' : 'pt-16'}`}>
+        <main className={`w-full flex-1 ${isAuthPage || isDashboardLike ? '' : 'pt-16'}`}>
           <AnimatePresence mode="wait" initial={false}>
+            <Suspense fallback={<PageLoader />}> 
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={
@@ -86,6 +92,7 @@ function AppContent() {
               <Route path="/pricing" element={<Pricing />} />
               <Route path="*" element={<div className="min-h-screen flex items-center justify-center text-gray-600">Page not found</div>} />
             </Routes>
+            </Suspense>
           </AnimatePresence>
         </main>
       </ErrorBoundary>
@@ -108,15 +115,20 @@ function GuestRoute({ children }) {
 function App() {
   return (
     <AuthProvider>
-      <AppWithFooter />
+      <ToastProvider>
+        <AppWithFooter />
+      </ToastProvider>
     </AuthProvider>
   );
 }
 
 function AppWithFooter() {
+  const location = useLocation();
+  const hideFooter = location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/editor');
   return (
     <div className="min-h-screen flex flex-col">
       <AppContent />
+      {!hideFooter && (
       <footer className="w-full bg-gray-900 text-white py-8 mt-auto">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -170,6 +182,7 @@ function AppWithFooter() {
           </div>
         </div>
       </footer>
+      )}
     </div>
   );
 }
