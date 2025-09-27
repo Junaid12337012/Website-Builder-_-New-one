@@ -1,0 +1,965 @@
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  FiSave, 
+  FiEye, 
+  FiCode, 
+  FiSmartphone, 
+  FiTablet, 
+  FiMonitor, 
+  FiX, 
+  FiRotateCw, 
+  FiRotateCcw,
+  FiHelpCircle,
+  FiCopy,
+  FiTrash2,
+  FiPlus,
+  FiMinus,
+  FiGrid,
+  FiType,
+  FiImage,
+  FiLayout,
+  FiSquare,
+  FiList,
+  FiVideo,
+  FiSliders,
+  FiColumns,
+  FiNavigation,
+  FiMail,
+  FiSettings,
+  FiLayers,
+  FiBox,
+  FiSearch,
+  FiChevronDown,
+  FiEdit2,
+  FiPlusCircle
+} from 'react-icons/fi';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { Resizable } from 're-resizable';
+import { ChromePicker } from 'react-color';
+import { v4 as uuidv4 } from 'uuid';
+import { LoadingSpinner } from '../components/LoadingSpinner';
+import api from '../lib/api';
+import { getToken } from '../lib/auth';
+
+// Available components that can be added to the page
+const COMPONENTS = [
+  { 
+    category: 'Layout', 
+    components: [
+      { id: 'section', name: 'Section', icon: <FiLayout />, defaultWidth: '100%' },
+      { id: 'container', name: 'Container', icon: <FiSquare />, defaultWidth: '1200px' },
+      { id: 'div', name: 'Div Block', icon: <FiBox />, defaultWidth: '100%' },
+      { id: 'grid', name: 'Grid', icon: <FiGrid />, defaultWidth: '100%' },
+      { id: 'columns', name: 'Columns', icon: <FiColumns />, defaultWidth: '100%' },
+    ]
+  },
+  {
+    category: 'Basic',
+    components: [
+      { id: 'heading', name: 'Heading', icon: <FiType />, defaultWidth: '100%' },
+      { id: 'paragraph', name: 'Paragraph', icon: <FiType />, defaultWidth: '100%' },
+      { id: 'button', name: 'Button', icon: <FiSquare />, defaultWidth: 'auto' },
+      { id: 'image', name: 'Image', icon: <FiImage />, defaultWidth: '300px' },
+      { id: 'divider', name: 'Divider', icon: <FiMinus />, defaultWidth: '100%' },
+      { id: 'spacer', name: 'Spacer', icon: <FiMinus rotate={90} />, defaultWidth: '100%' },
+    ]
+  },
+  {
+    category: 'Media',
+    components: [
+      { id: 'video', name: 'Video', icon: <FiVideo />, defaultWidth: '100%' },
+      { id: 'image-gallery', name: 'Image Gallery', icon: <FiImage />, defaultWidth: '100%' },
+      { id: 'slider', name: 'Slider', icon: <FiSliders />, defaultWidth: '100%' },
+    ]
+  },
+  {
+    category: 'Navigation',
+    components: [
+      { id: 'navbar', name: 'Navbar', icon: <FiNavigation />, defaultWidth: '100%' },
+      { id: 'tabs', name: 'Tabs', icon: <FiLayers />, defaultWidth: '100%' },
+    ]
+  },
+  {
+    category: 'Forms',
+    components: [
+      { id: 'form', name: 'Form', icon: <FiMail />, defaultWidth: '100%' },
+      { id: 'input', name: 'Input', icon: <FiSquare />, defaultWidth: '100%' },
+      { id: 'select', name: 'Dropdown', icon: <FiList />, defaultWidth: '100%' },
+    ]
+  }
+];
+
+// Default content for each component type
+const DEFAULT_CONTENT = {
+  header: { text: 'New Header', level: 1, align: 'left' },
+  paragraph: { text: 'Start typing your paragraph here...', align: 'left' },
+  button: { text: 'Click Me', url: '#', variant: 'primary' },
+  image: { url: 'https://via.placeholder.com/400x200', alt: 'Image' },
+  divider: { type: 'solid', color: '#e5e7eb' },
+  spacer: { height: '40px' },
+}
+
+// Component for the sidebar where users can drag components from
+const ComponentPalette = () => {
+  const [activeCategory, setActiveCategory] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const filteredComponents = COMPONENTS.map(category => ({
+    ...category,
+    components: searchTerm 
+      ? category.components.filter(comp => 
+          comp.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : category.components
+  })).filter(category => category.components.length > 0);
+
+  const renderComponent = (component) => {
+    const [{ isDragging }, drag] = useDrag(() => ({
+      type: 'component',
+      item: { type: 'component', componentType: component.id },
+      collect: (monitor) => ({
+        isDragging: !!monitor.isDragging(),
+      }),
+    }));
+
+    return (
+      <div
+        key={component.id}
+        ref={drag}
+        className="flex items-center p-2 mb-2 bg-white rounded border border-gray-200 cursor-move hover:bg-blue-50 hover:border-blue-200 transition-colors"
+        data-component={component.id}
+      >
+        <div className="w-8 h-8 flex items-center justify-center text-blue-600 mr-2">
+          {component.icon}
+        </div>
+        <div className="flex-1">
+          <div className="text-sm font-medium text-gray-800">{component.name}</div>
+          <div className="text-xs text-gray-500">{component.defaultWidth}</div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="w-64 bg-white border-r border-gray-200 flex flex-col h-full">
+      <div className="p-3 border-b border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-800 mb-2">Add Elements</h2>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search elements..."
+            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <FiSearch className="absolute right-3 top-2.5 text-gray-400" />
+        </div>
+      </div>
+      
+      <div className="flex-1 overflow-y-auto">
+        {filteredComponents.map((category, index) => (
+          <div key={category.category} className="border-b border-gray-200">
+            <div 
+              className="px-4 py-2 flex items-center justify-between cursor-pointer bg-gray-50"
+              onClick={() => setActiveCategory(activeCategory === index ? null : index)}
+            >
+              <span className="text-sm font-medium text-gray-700">{category.category}</span>
+              <FiChevronDown className={`transition-transform ${activeCategory === index ? 'transform rotate-180' : ''}`} />
+            </div>
+            
+            <div className={`p-2 ${activeCategory === index ? 'block' : 'hidden'}`}>
+              {category.components.map(comp => renderComponent(comp))}
+            </div>
+          </div>
+        ))}
+    </div>
+  );
+};
+
+// Main Editor component that will be the default export
+const Editor = () => {
+  const [elements, setElements] = useState([]);
+  const [selectedElement, setSelectedElement] = useState(null);
+  const [previewMode, setPreviewMode] = useState(false);
+
+  const handleDrop = useCallback((componentType, monitor) => {
+    // Your existing drop handler logic
+  }, []);
+
+  const handleUpdateElement = useCallback((id, updates) => {
+    // Your existing update logic
+  }, []);
+
+  const handleDeleteElement = useCallback((id) => {
+    // Your existing delete logic
+  }, []);
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex h-screen bg-gray-100">
+        <ComponentPalette />
+        <EditorCanvas 
+          elements={elements}
+          onDrop={handleDrop}
+          onUpdateElement={handleUpdateElement}
+          selectedElement={selectedElement}
+          setSelectedElement={setSelectedElement}
+          onDeleteElement={handleDeleteElement}
+          previewMode={previewMode}
+        />
+        <PropertiesPanel 
+          element={selectedElement} 
+          onUpdate={handleUpdateElement}
+          onDelete={handleDeleteElement}
+        />
+      </div>
+    </DndProvider>
+  );
+};
+
+export default Editor;
+
+// Component for the main editing area
+const EditorCanvas = ({ elements, onDrop, onUpdateElement, selectedElement, setSelectedElement, onDeleteElement, previewMode = false }) => {
+  const dropSpec = useMemo(() => ({
+    accept: 'component',
+    drop: (item, monitor) => {
+      const componentType = monitor.getItem().componentType;
+      onDrop(componentType, monitor);
+      return undefined;
+    },
+    canDrop: () => !previewMode
+  }), [onDrop, previewMode]);
+
+  const [, drop] = useDrop(dropSpec);
+
+  const handleElementClick = useCallback((e, element) => {
+    e.stopPropagation();
+    setSelectedElement(element);
+  }, [setSelectedElement]);
+
+  const renderElement = useCallback((element) => {
+    const isSelected = selectedElement?.id === element.id;
+    const baseClasses = 'relative group my-2 mx-auto transition-all';
+    const selectedClasses = isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:ring-1 hover:ring-blue-300';
+    
+    const handleClick = (e) => {
+      e.stopPropagation();
+      setSelectedElement(element);
+    };
+    
+    const elementClasses = `${baseClasses} ${selectedClasses}`;
+
+    const elementStyle = {
+      width: element.style?.width || '100%',
+      maxWidth: element.style?.maxWidth || '100%',
+      margin: element.style?.margin || '0 auto',
+      padding: element.style?.padding || '1rem',
+      backgroundColor: element.style?.backgroundColor || 'transparent',
+      ...element.style
+    };
+
+    const elementContent = (() => {
+      switch (element.type) {
+        case 'heading':
+          const HeadingTag = `h${element.content?.level || 1}`;
+          return <HeadingTag style={{ textAlign: element.content?.align || 'left' }}>
+            {element.content?.text || 'New Heading'}
+          </HeadingTag>;
+        
+        case 'paragraph':
+          return <p style={{ textAlign: element.content?.align || 'left' }}>
+            {element.content?.text || 'Start typing your paragraph here...'}
+          </p>;
+        
+        case 'button':
+          return <button 
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            style={element.content?.style || {}}
+          >
+            {element.content?.text || 'Click Me'}
+          </button>;
+        
+        case 'image':
+          return <img 
+            src={element.content?.url || 'https://via.placeholder.com/400x200'} 
+            alt={element.content?.alt || 'Image'}
+            className="w-full h-auto"
+            style={{ objectFit: 'contain' }}
+          />;
+        
+        case 'section':
+          return <div className="min-h-[200px] border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
+            <span className="text-gray-500">Section</span>
+          </div>;
+        
+        case 'container':
+          return <div className="border border-gray-200 rounded p-4">
+            {element.children?.map(child => renderElement(child))}
+          </div>;
+        
+        default:
+          return <div className="p-4 border border-dashed border-gray-400 rounded">
+            {element.type} Component
+            {element.content?.text && <div>{element.content.text}</div>}
+          </div>;
+      }
+    })();
+
+    if (previewMode) {
+      return (
+        <div key={element.id} style={elementStyle}>
+          {elementContent}
+          {element.children?.map(child => renderElement(child))}
+        </div>
+      );
+    }
+
+    return (
+      <div
+        key={element.id}
+        className={elementClasses}
+        style={elementStyle}
+        onClick={handleClick}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => e.preventDefault()}
+      >
+        {/* Hover/Selected Toolbar */}
+        {(isSelected || element.hovered) && (
+          <div className="absolute -top-8 left-0 right-0 flex justify-center space-x-1">
+            <button 
+              className="bg-blue-500 text-white p-1 rounded-t"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Handle edit
+              }}
+            >
+              <FiEdit2 size={14} />
+            </button>
+            <button 
+              className="bg-blue-500 text-white p-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Handle duplicate
+              }}
+            >
+              <FiCopy size={14} />
+            </button>
+            <button 
+              className="bg-red-500 text-white p-1 rounded-t"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteElement(element.id);
+              }}
+            >
+              <FiTrash2 size={14} />
+            </button>
+          </div>
+        )}
+        
+        {/* Element Content */}
+        <div className="relative w-full h-full">
+          {elementContent}
+          
+          {/* Resize Handles */}
+          {isSelected && (
+            <>
+              <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-blue-500 rounded-full cursor-nwse-resize" />
+              <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-blue-500 rounded-full cursor-nesw-resize" />
+              <div className="absolute -top-1 -left-1 w-2 h-2 bg-blue-500 rounded-full cursor-nesw-resize" />
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full cursor-nwse-resize" />
+            </>
+          )}
+        </div>
+        
+        {/* Nested Elements */}
+        {element.children && (
+          <div className="pl-4 mt-2 space-y-2">
+            {element.children.map(child => renderElement(child))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div 
+      ref={drop} 
+      className="flex-1 bg-gray-50 p-8 overflow-auto"
+      onClick={() => !previewMode && setSelectedElement(null)}
+    >
+      <div className="max-w-6xl mx-auto bg-white min-h-screen shadow-lg p-8">
+        {elements.length === 0 ? (
+          <div className="h-64 flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-300 rounded-lg">
+            <FiPlusCircle className="text-4xl mb-2" />
+            <p>Drag and drop components here</p>
+            <p className="text-sm text-gray-500 mt-2">or click the + button to add a new section</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {elements.map((element) => renderElement(element))}
+            {!previewMode && (
+              <button 
+                className="w-full py-4 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-gray-500 hover:border-blue-400 hover:text-blue-500 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Handle add new section
+                }}
+              >
+                <FiPlus className="mr-2" /> Add Section
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Component for the properties panel
+const PropertiesPanel = ({ element, onUpdate }) => {
+  if (!element) {
+    return (
+      <div className="w-64 bg-white border-l p-4 flex items-center justify-center text-gray-500">
+        Select an element to edit its properties
+      </div>
+    )
+  }
+
+  const updateProperty = (property, value) => {
+    onUpdate({
+      ...element,
+      [property]: value,
+    })
+  }
+
+  return (
+    <div className="w-64 bg-white border-l p-4 overflow-y-auto">
+      <h3 className="font-medium mb-4">
+        {element.type.charAt(0).toUpperCase() + element.type.slice(1)} Properties
+      </h3>
+      
+      {element.type === 'header' && (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Text</label>
+            <input
+              type="text"
+              value={element.text || ''}
+              onChange={(e) => updateProperty('text', e.target.value)}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Level</label>
+            <select
+              value={element.level}
+              onChange={(e) => updateProperty('level', parseInt(e.target.value))}
+              className="w-full p-2 border rounded"
+            >
+              {[1, 2, 3, 4, 5, 6].map((level) => (
+                <option key={level} value={level}>
+                  H{level}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Alignment</label>
+            <select
+              value={element.align}
+              onChange={(e) => updateProperty('align', e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {element.type === 'paragraph' && (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Text</label>
+            <textarea
+              value={element.text}
+              onChange={(e) => updateProperty('text', e.target.value)}
+              rows={4}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Alignment</label>
+            <select
+              value={element.align}
+              onChange={(e) => updateProperty('align', e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+              <option value="justify">Justify</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {element.type === 'button' && (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Button Text</label>
+            <input
+              type="text"
+              value={element.text}
+              onChange={(e) => updateProperty('text', e.target.value)}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
+            <input
+              type="text"
+              value={element.url}
+              onChange={(e) => updateProperty('url', e.target.value)}
+              className="w-full p-2 border rounded"
+              placeholder="https://example.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Variant</label>
+            <select
+              value={element.variant}
+              onChange={(e) => updateProperty('variant', e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="primary">Primary</option>
+              <option value="secondary">Secondary</option>
+              <option value="outline">Outline</option>
+              <option value="ghost">Ghost</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {element.type === 'image' && (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+            <input
+              type="text"
+              value={element.url}
+              onChange={(e) => updateProperty('url', e.target.value)}
+              className="w-full p-2 border rounded"
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Alt Text</label>
+            <input
+              type="text"
+              value={element.alt}
+              onChange={(e) => updateProperty('alt', e.target.value)}
+              className="w-full p-2 border rounded"
+              placeholder="Description of the image"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Alignment</label>
+            <select
+              value={element.align || 'left'}
+              onChange={(e) => updateProperty('align', e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+              <option value="right">Right</option>
+            </select>
+          </div>
+        </div>
+      )}
+
+      {element.type === 'divider' && (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+            <select
+              value={element.type || 'solid'}
+              onChange={(e) => updateProperty('type', e.target.value)}
+              className="w-full p-2 border rounded"
+            >
+              <option value="solid">Solid</option>
+              <option value="dashed">Dashed</option>
+              <option value="dotted">Dotted</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
+            <input
+              type="color"
+              value={element.color || '#e5e7eb'}
+              onChange={(e) => updateProperty('color', e.target.value)}
+              className="w-full h-10 p-1 border rounded"
+            />
+          </div>
+        </div>
+      )}
+
+      {element.type === 'spacer' && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Height (px)</label>
+          <input
+            type="number"
+            min="10"
+            max="500"
+            value={parseInt(element.height || '40')}
+            onChange={(e) => updateProperty('height', `${e.target.value}px`)}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Helper function to render elements in the canvas
+const renderElement = (element, onUpdate) => {
+  const updateProperty = (property, value) => {
+    onUpdate({
+      ...element,
+      [property]: value,
+    })
+  }
+
+  switch (element.type) {
+    case 'header':
+      const HeaderTag = `h${element.level || 1}`
+      return (
+        <HeaderTag 
+          className={`text-${element.align || 'left'}`}
+          style={{ textAlign: element.align || 'left' }}
+        >
+          {element.text || 'New Header'}
+        </HeaderTag>
+      )
+    
+    case 'paragraph':
+      return (
+        <p 
+          className={`text-${element.align || 'left'}`}
+          style={{ textAlign: element.align || 'left' }}
+        >
+          {element.text || 'Start typing your paragraph here...'}
+        </p>
+      )
+    
+    case 'button':
+      const buttonClasses = {
+        primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+        secondary: 'bg-gray-600 hover:bg-gray-700 text-white',
+        outline: 'bg-transparent hover:bg-gray-100 text-blue-600 border border-blue-600',
+        ghost: 'bg-transparent hover:bg-gray-100 text-blue-600',
+      }
+      
+      return (
+        <div className={`text-${element.align || 'left'}`} style={{ textAlign: element.align || 'left' }}>
+          <a
+            href={element.url || '#'}
+            className={`inline-block px-4 py-2 rounded ${buttonClasses[element.variant || 'primary']}`}
+          >
+            {element.text || 'Button'}
+          </a>
+        </div>
+      )
+    
+    case 'image':
+      return (
+        <div className={`text-${element.align || 'left'}`} style={{ textAlign: element.align || 'left' }}>
+          <img 
+            src={element.url || 'https://via.placeholder.com/400x200'} 
+            alt={element.alt || 'Image'}
+            className="max-w-full h-auto"
+          />
+        </div>
+      )
+    
+    case 'divider':
+      const dividerStyle = {
+        border: 'none',
+        borderTop: `1px ${element.type || 'solid'} ${element.color || '#e5e7eb'}`,
+        margin: '1rem 0',
+      }
+      return <hr style={dividerStyle} />
+    
+    case 'spacer':
+      return <div style={{ height: element.height || '40px' }} />
+    
+    default:
+      return null
+  }
+}
+
+// Main Editor component
+export default function Editor() {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [project, setProject] = useState(null)
+  const [elements, setElements] = useState([])
+  const [selectedElement, setSelectedElement] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [viewMode, setViewMode] = useState('desktop') // 'desktop', 'tablet', 'mobile'
+  const [isSaving, setIsSaving] = useState(false)
+  const [isDirty, setIsDirty] = useState(false)
+  const saveTimeout = useRef(null)
+
+  // Load project data
+  useEffect(() => {
+    if (!getToken()) {
+      navigate('/login')
+      return
+    }
+
+    const fetchProject = async () => {
+      try {
+        setLoading(true)
+        const { data } = await api.get(`/projects/${id}`)
+        setProject(data.project)
+        setElements(data.project.content?.elements || [])
+      } catch (err) {
+        setError('Failed to load project')
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProject()
+
+    // Warn user if they try to leave with unsaved changes
+    const handleBeforeUnload = (e) => {
+      if (isDirty) {
+        e.preventDefault()
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+      if (saveTimeout.current) clearTimeout(saveTimeout.current)
+    }
+  }, [id, navigate, isDirty])
+
+  // Handle dropping a component onto the canvas
+  const handleDrop = useCallback((componentType, e) => {
+    // Prevent default behavior to avoid page refresh
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    const newElement = {
+      id: `el-${Date.now()}`,
+      type: componentType,
+      ...DEFAULT_CONTENT[componentType],
+    };
+    
+    setElements(prevElements => [...prevElements, newElement]);
+    setSelectedElement(newElement);
+    setIsDirty(true);
+    
+    // Don't auto-save immediately, let the auto-save handle it
+  }, []);
+
+  // Handle updating an element
+  const handleUpdateElement = useCallback((updatedElement) => {
+    setElements(prevElements => 
+      prevElements.map(el => 
+        el.id === updatedElement.id ? updatedElement : el
+      )
+    );
+    setSelectedElement(updatedElement);
+    setIsDirty(true);
+    // Auto-save will be triggered by the effect
+  }, []);
+
+  // Handle deleting an element
+  const handleDeleteElement = useCallback((elementId) => {
+    setElements(prevElements => prevElements.filter(el => el.id !== elementId));
+    if (selectedElement?.id === elementId) {
+      setSelectedElement(null);
+    }
+    setIsDirty(true);
+    // Auto-save will be triggered by the effect
+  }, [selectedElement?.id]);
+
+  // Auto-save changes after a delay
+  const autoSave = useCallback(() => {
+    if (saveTimeout.current) {
+      clearTimeout(saveTimeout.current);
+    }
+    
+    saveTimeout.current = setTimeout(async () => {
+      if (!isDirty) return;
+      
+      try {
+        setIsSaving(true);
+        await api.put(`/projects/${id}`, {
+          content: { elements }
+        });
+        setIsDirty(false);
+      } catch (err) {
+        console.error('Failed to save changes', err)
+      } finally {
+        setIsSaving(false)
+      }
+    }, 1000) // 1 second debounce
+  }, [elements, id])
+
+  // Manual save
+  const handleSave = async () => {
+    try {
+      setIsSaving(true)
+      await api.put(`/projects/${id}`, {
+        content: { elements }
+      })
+      setIsDirty(false)
+    } catch (err) {
+      console.error('Failed to save changes', err)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  // Preview the website
+  const handlePreview = () => {
+    // In a real app, this would open a preview in a new tab
+    alert('Preview functionality will be implemented here')
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-500 text-center">
+          <p className="text-xl font-medium">Error loading project</p>
+          <p className="mt-2">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex flex-col h-screen bg-gray-100">
+        {/* Top toolbar */}
+        <div className="bg-white border-b border-gray-200 p-2 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="p-2 text-gray-600 hover:bg-gray-100 rounded"
+              title="Back to Dashboard"
+            >
+              ←
+            </button>
+            <h1 className="text-lg font-medium">{project?.name || 'Untitled Project'}</h1>
+            {isDirty && (
+              <span className="text-xs text-gray-500 ml-2">
+                {isSaving ? 'Saving...' : 'Unsaved changes'}
+              </span>
+            )}
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <div className="flex bg-gray-100 rounded-md p-1">
+              <button
+                onClick={() => setViewMode('mobile')}
+                className={`p-1 rounded ${viewMode === 'mobile' ? 'bg-white shadow' : 'text-gray-500'}`}
+                title="Mobile View"
+              >
+                <FiSmartphone className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => setViewMode('tablet')}
+                className={`p-1 rounded ${viewMode === 'tablet' ? 'bg-white shadow' : 'text-gray-500'}`}
+                title="Tablet View"
+              >
+                <FiTablet className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => setViewMode('desktop')}
+                className={`p-1 rounded ${viewMode === 'desktop' ? 'bg-white shadow' : 'text-gray-500'}`}
+                title="Desktop View"
+              >
+                <FiMonitor className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <button
+              onClick={handlePreview}
+              className="flex items-center px-3 py-1.5 border border-gray-300 rounded text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <FiEye className="mr-2 h-4 w-4" />
+              Preview
+            </button>
+            
+            <button
+              onClick={handleSave}
+              disabled={!isDirty || isSaving}
+              className="flex items-center px-3 py-1.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FiSave className="mr-2 h-4 w-4" />
+              {isSaving ? 'Saving...' : 'Save'}
+            </button>
+          </div>
+        </div>
+        
+        <div className="flex flex-1 overflow-hidden">
+          {/* Left sidebar - Component palette */}
+          <ComponentPalette />
+          
+          {/* Main editor area */}
+          <div className="flex-1 flex overflow-hidden">
+            <div 
+              className={`flex-1 overflow-auto ${viewMode === 'mobile' ? 'max-w-md mx-auto' : ''} ${
+                viewMode === 'tablet' ? 'max-w-2xl mx-auto' : ''
+              }`}
+            >
+              <EditorCanvas
+                elements={elements}
+                onDrop={handleDrop}
+                onUpdateElement={handleUpdateElement}
+                onDeleteElement={handleDeleteElement}
+                selectedElement={selectedElement}
+                setSelectedElement={setSelectedElement}
+              />
+            </div>
+            
+            {/* Right sidebar - Properties panel */}
+            <PropertiesPanel 
+              element={selectedElement} 
+              onUpdate={handleUpdateElement} 
+            />
+          </div>
+        </div>
+      </div>
+    </DndProvider>
+  )
+}
