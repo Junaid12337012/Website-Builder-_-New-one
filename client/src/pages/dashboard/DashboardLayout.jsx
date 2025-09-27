@@ -87,13 +87,13 @@ export default function DashboardLayout({ children }) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden bg-gray-900" role="main" aria-label="Main content">
-        <header className="bg-gray-800 shadow-sm">
+        <header className="bg-gray-800 shadow-sm border-b border-gray-700">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16 items-center">
-              <div className="flex items-center lg:hidden">
+              <div className="flex items-center">
                 <button 
                   onClick={() => setIsSidebarOpen(true)}
-                  className="text-gray-400 hover:text-white p-2 rounded-md focus:outline-none"
+                  className="text-gray-400 hover:text-white p-2 rounded-md focus:outline-none lg:hidden"
                   aria-label="Open sidebar"
                   aria-controls="sidebar"
                 >
@@ -102,16 +102,59 @@ export default function DashboardLayout({ children }) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
+                
+                {/* Breadcrumb Navigation */}
+                <nav className="hidden md:flex items-center text-sm" aria-label="Breadcrumb">
+                  <ol className="flex items-center space-x-4">
+                    <li>
+                      <div>
+                        <Link to="/dashboard" className="text-gray-300 hover:text-white">
+                          Dashboard
+                        </Link>
+                      </div>
+                    </li>
+                    {location.pathname !== '/dashboard' && (
+                      <li>
+                        <div className="flex items-center">
+                          <svg className="flex-shrink-0 h-5 w-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                          </svg>
+                          <Link 
+                            to={location.pathname} 
+                            className="ml-4 text-sm font-medium text-white hover:text-gray-300"
+                          >
+                            {navItems.find(item => item.path === location.pathname)?.name || 
+                             location.pathname.split('/').pop().charAt(0).toUpperCase() + 
+                             location.pathname.split('/').pop().slice(1)}
+                          </Link>
+                        </div>
+                      </li>
+                    )}
+                  </ol>
+                </nav>
               </div>
-              <div />
-              <div className="ml-4 flex items-center">
-                <button className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none transition-colors">
+              
+              <div className="flex items-center space-x-4">
+                <button className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none transition-colors relative">
                   <span className="sr-only">View notifications</span>
                   <div className="relative">
-                    <FiBell className="h-6 w-6" />
+                    <FiBell className="h-5 w-5" />
                     <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-gray-800"></span>
                   </div>
                 </button>
+                
+                <div className="hidden md:block h-6 w-px bg-gray-600"></div>
+                
+                <div className="flex items-center">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm shadow-md">
+                    {localStorage.getItem('userName')?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-white">
+                      {localStorage.getItem('userName') || 'User'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

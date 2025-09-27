@@ -16,10 +16,48 @@ const elementSchema = new mongoose.Schema({
   // Allow any other properties
 }, { _id: false, strict: false })
 
+const projectSettingsSchema = new mongoose.Schema({
+  seo: {
+    title: String,
+    description: String,
+    keywords: [String],
+    favicon: String
+  },
+  analytics: {
+    googleAnalyticsId: String,
+    facebookPixelId: String
+  },
+  integrations: {
+    googleMapsApiKey: String,
+    recaptchaSiteKey: String
+  },
+  domain: {
+    customDomain: String,
+    subdomain: String
+  },
+  version: { type: String, default: '1.0.0' }
+}, { _id: false })
+
 const projectSchema = new mongoose.Schema(
   {
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     name: { type: String, required: true },
+    description: { type: String, default: '' },
+    template: {
+      id: { type: String, default: 'blank' },
+      name: { type: String, default: 'Blank' },
+      category: { type: String, default: 'general' }
+    },
+    thumbnail: { type: String, default: '' },
+    status: { 
+      type: String, 
+      enum: ['draft', 'published', 'archived'], 
+      default: 'draft' 
+    },
+    settings: { 
+      type: projectSettingsSchema,
+      default: () => ({})
+    },
     content: {
       elements: [elementSchema],
       styles: { type: Map, of: String, default: {} },
